@@ -8,6 +8,7 @@ import {Header} from "./components/Header.tsx";
 import {Provider} from "react-redux";
 import {store} from "./store";
 import {Properties} from "./pages/Properties.tsx";
+import {Login} from "./pages/Login.tsx";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
                     <main className="flex-grow">
                         <Routes>
                             <Route path="/" element={<Home/>}/>
+                            <Route path="/login" element={<Login/>}/>
                             <Route path="/properties" element={<Properties/>}/>
                             <Route path="/about" element={<About/>}/>
                             <Route path="/contact" element={<Contact/>}/>
