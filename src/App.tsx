@@ -9,6 +9,7 @@ import {Provider} from "react-redux";
 import {store} from "./store";
 import {Properties} from "./pages/Properties.tsx";
 import {Login} from "./pages/Login.tsx";
+import {AddProperty} from "./pages/AddProperty.tsx";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
                             <Route path="/" element={<Home/>}/>
                             <Route path="/login" element={<Login/>}/>
                             <Route path="/properties" element={<Properties/>}/>
+                            <Route path="/add-property" element={<AddProperty/>}/>
                             <Route path="/about" element={<About/>}/>
                             <Route path="/contact" element={<Contact/>}/>
                         </Routes>
