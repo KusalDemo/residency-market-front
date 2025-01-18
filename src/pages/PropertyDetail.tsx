@@ -7,7 +7,9 @@ import { RootState } from '../store';
 export const PropertyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { properties } = useSelector((state: RootState) => state.property);
+  const {user} = useSelector((state: RootState) => state.auth);
   const property = properties.find(p => p.id === id);
+
 
   if (!property) {
     return <div className="container mx-auto px-6 py-12">Property not found</div>;
@@ -50,11 +52,11 @@ export const PropertyDetail: React.FC = () => {
               </div>
               <div className="flex items-center">
                 <Bath className="h-5 w-5 mr-2 text-gray-600" />
-                <span>{property.bathrooms} Baths</span>
+                <span>{property.facilities.bathrooms} Baths</span>
               </div>
               <div className="flex items-center">
                 <Square className="h-5 w-5 mr-2 text-gray-600" />
-                <span>{property.area} sqft</span>
+                <span>{property.facilities.area} sqft</span>
               </div>
             </div>
             <button className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors">
@@ -76,7 +78,7 @@ export const PropertyDetail: React.FC = () => {
               </div>
               <div className="flex items-center">
                 <Mail className="h-5 w-5 mr-3 text-blue-600" />
-                <span>{property.email}</span>
+                <span>{user.email}</span>
               </div>
             </div>
           </div>

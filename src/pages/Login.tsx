@@ -15,9 +15,8 @@ export const Login: React.FC = () => {
 
     const user: User = {
       id: '1',
-      name: 'Kusal Gunasekara',
+      name: email,
       email: email,
-      role: 'user'
     };
     dispatch(login(user));
     navigate('/');
