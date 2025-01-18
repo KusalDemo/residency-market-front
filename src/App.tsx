@@ -10,6 +10,7 @@ import {store} from "./store";
 import {Properties} from "./pages/Properties.tsx";
 import {Login} from "./pages/Login.tsx";
 import {AddProperty} from "./pages/AddProperty.tsx";
+import {Favorites} from "./pages/Favorites.tsx";
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
                             <Route path="/add-property" element={<AddProperty/>}/>
                             <Route path="/about" element={<About/>}/>
                             <Route path="/contact" element={<Contact/>}/>
+                            <Route path="/favorites" element={<Favorites/>}/>
                         </Routes>
                     </main>
                     <Footer/>
