@@ -11,6 +11,7 @@ import {Properties} from "./pages/Properties.tsx";
 import {Login} from "./pages/Login.tsx";
 import {AddProperty} from "./pages/AddProperty.tsx";
 import {Favorites} from "./pages/Favorites.tsx";
+import {PropertyDetail} from "./pages/PropertyDetail.tsx";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
                             <Route path="/login" element={<Login/>}/>
                             <Route path="/properties" element={<Properties/>}/>
                             <Route path="/add-property" element={<AddProperty/>}/>
+                            <Route path="/property/:id" element={<PropertyDetail/>}/>
                             <Route path="/about" element={<About/>}/>
                             <Route path="/contact" element={<Contact/>}/>
                             <Route path="/favorites" element={<Favorites/>}/>
