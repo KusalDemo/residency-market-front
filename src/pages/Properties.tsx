@@ -1,10 +1,19 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import { PropertyCard } from '../components/PropertyCard';
 import { RootState } from '../store';
+import {getProperties} from "../store/slices/propertySlice.ts";
 
 export const Properties: React.FC = () => {
-  const { properties } = useSelector((state: RootState) => state.property);
+    const dispatch = useDispatch();
+  const { properties , error , loading} = useSelector((state: RootState) => state.property);
+
+    useEffect(() => {
+        dispatch(getProperties());
+    }, [dispatch]);
+
+    if (loading) return <p className="flex justify-center ">Loading...</p>;
+    if (error) return <p className="flex justify-center mt-10">Error: {error}</p>;
 
   return (
     <div className="container mx-auto px-6 py-12">
