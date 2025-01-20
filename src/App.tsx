@@ -13,6 +13,7 @@ import {AddProperty} from "./pages/AddProperty.tsx";
 import {Favorites} from "./pages/Favorites.tsx";
 import {PropertyDetail} from "./pages/PropertyDetail.tsx";
 import {Payment} from "./pages/Payment.tsx";
+import {Bookings} from "./pages/Bookings.tsx";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
                             <Route path="/contact" element={<Contact/>}/>
                             <Route path="/favorites" element={<Favorites/>}/>
                             <Route path="/payment/:id" element={<Payment />} />
+                            <Route path="/bookings" element={<Bookings />} />
                         </Routes>
                     </main>
                     <Footer/>
