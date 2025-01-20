@@ -40,6 +40,7 @@ export const Header: React.FC = () => {
             <div className="hidden md:flex items-center space-x-8">
               <Link to="/" className="text-gray-600 hover:text-blue-600">Home</Link>
               <Link to="/properties" className="text-gray-600 hover:text-blue-600">Properties</Link>
+              <Link to="/news" className="text-gray-600 hover:text-blue-600">News</Link>
               <Link to="/about" className="text-gray-600 hover:text-blue-600">About</Link>
               <Link to="/contact" className="text-gray-600 hover:text-blue-600">Contact</Link>
               {isAuthenticated && (

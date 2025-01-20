@@ -14,6 +14,7 @@ import {Favorites} from "./pages/Favorites.tsx";
 import {PropertyDetail} from "./pages/PropertyDetail.tsx";
 import {Payment} from "./pages/Payment.tsx";
 import {Bookings} from "./pages/Bookings.tsx";
+import TourismNews from "./pages/News.tsx";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
                             <Route path="/favorites" element={<Favorites/>}/>
                             <Route path="/payment/:id" element={<Payment />} />
                             <Route path="/bookings" element={<Bookings />} />
+                            <Route path="/news" element={<TourismNews />} />
                         </Routes>
                     </main>
                     <Footer/>
