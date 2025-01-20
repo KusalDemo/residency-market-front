@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import { PropertyCard } from '../components/PropertyCard';
 import { RootState } from '../store';
 import {getProperties} from "../store/slices/propertySlice.ts";
+import Loading from "../components/Loading.tsx";
 
 export const Properties: React.FC = () => {
     const dispatch = useDispatch();
@@ -12,7 +13,13 @@ export const Properties: React.FC = () => {
         dispatch(getProperties());
     }, [dispatch]);
 
-    if (loading) return <p className="flex justify-center ">Loading...</p>;
+    if (loading) {
+        return (
+            <div className="text-center py-10 flex flex-col items-center" >
+                <Loading /> Loading properties...
+            </div>
+        )
+    }
     if (error) return <p className="flex justify-center mt-10">Error: {error}</p>;
 
   return (

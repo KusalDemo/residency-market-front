@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {Article} from "../types";
+import Loading from "../components/Loading.tsx";
 
 
 const TourismNews: React.FC = () => {
@@ -30,7 +31,11 @@ const TourismNews: React.FC = () => {
     }, []);
 
     if (loading) {
-        return <div className="text-center py-10">Loading news...</div>;
+        return (
+            <div className="text-center py-10 flex flex-col items-center" >
+                <Loading /> Loading news...
+            </div>
+            )
     }
 
     if (error) {

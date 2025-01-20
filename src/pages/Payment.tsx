@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { payBooking} from '../store/slices/bookingSlice';
 import { CreditCard, Calendar } from 'lucide-react';
+import Loading from "../components/Loading.tsx";
 
 export const Payment: React.FC = () => {
     const navigate = useNavigate();
@@ -11,7 +12,7 @@ export const Payment: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { properties } = useSelector((state: RootState) => state.property);
     const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
-    const { bookings , error , loading} = useSelector((state: RootState) => state.booking);
+    const {  error , loading} = useSelector((state: RootState) => state.booking);
     const property = properties.find(p => p.id === id);
 
     const [paymentDetails, setPaymentDetails] = useState({
@@ -21,7 +22,13 @@ export const Payment: React.FC = () => {
         name: ''
     });
 
-    if (loading) return <p className="flex justify-center mt-10">Payment processing...</p>;
+    if (loading) {
+        return (
+            <div className="text-center py-10 flex flex-col items-center" >
+                <Loading /> Payment Processing...
+            </div>
+        )
+    }
     if (error) return <p className="flex justify-center mt-10">Error: {error}</p>;
 
     if (!isAuthenticated) {
@@ -35,7 +42,7 @@ export const Payment: React.FC = () => {
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+        e.preventDefault()
 
         // In a real app, this would process payment through Stripe
 
@@ -46,7 +53,8 @@ export const Payment: React.FC = () => {
         }
 
         console.log(`Details 00 : ${booking1.email} | ${booking1.date} | ${booking1.propertyId}`)
-        const isBooked = await dispatch(payBooking(booking1));
+        await dispatch(payBooking(booking1));
+
         navigate('/bookings');
     };
 
