@@ -62,7 +62,13 @@ const propertySlice = createSlice({
       state.properties = state.properties.filter(
         property => property.id !== action.payload
       );
-    }
+    },
+      updateProperty: (state, action: PayloadAction<Residency>) => {
+          const index = state.properties.findIndex(p => p.id === action.payload.id);
+          if (index !== -1) {
+              state.properties[index] = action.payload;
+          }
+      }
   },
   extraReducers: (builder) => {
     builder
@@ -92,5 +98,5 @@ const propertySlice = createSlice({
   },
 });
 
-export const { setProperties, setSelectedProperty, removeProperty } = propertySlice.actions;
+export const { setProperties, setSelectedProperty, removeProperty, updateProperty } = propertySlice.actions;
 export default propertySlice.reducer;
