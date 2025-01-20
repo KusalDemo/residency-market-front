@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {addBooking} from "../../api/userApi.ts";
 
 export interface Booking {
     id: string;
@@ -23,6 +24,20 @@ const initialState: BookingState = {
     error: null,
 };
 
+export const payBooking = createAsyncThunk(
+    'user/bookVisit',
+    async (property : {email: string; date: string; propertyId: string}, { rejectWithValue }) => {
+        try{
+            console.log(`Details 01 : ${property.email} | ${property.date} | ${property.propertyId}`)
+            const bookings = await addBooking(property);
+            return bookings
+        }catch (err){
+            const message = err instanceof Error ? err.message : 'Failed to create residency.';
+            return rejectWithValue(message);
+        }
+    }
+)
+
 const bookingSlice = createSlice({
     name: 'booking',
     initialState,
@@ -46,7 +61,22 @@ const bookingSlice = createSlice({
             state.bookings = action.payload;
         }
     },
+    extraReducers: (builder) => {
+        builder
+            .addCase(payBooking.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(payBooking.fulfilled, (state, action) => {
+                state.loading = false;
+                state.bookings.push(action.payload);
+            })
+            .addCase(payBooking.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            });
+    }
 });
 
-export const { addBooking, cancelBooking, completeBooking, setBookings } = bookingSlice.actions;
+export const { cancelBooking, completeBooking, setBookings } = bookingSlice.actions;
 export default bookingSlice.reducer;

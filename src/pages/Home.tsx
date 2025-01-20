@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Hero } from '../components/Hero';
-import { Home as HomeIcon, Shield, Users, Phone } from 'lucide-react';
+import {Home as HomeIcon, Shield, Users, Phone, CheckCircle, Heart} from 'lucide-react';
 
 export const Home: React.FC = () => {
   return (
@@ -38,28 +38,49 @@ export const Home: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div>
               <h3 className="text-2xl font-semibold mb-4">Trust & Transparency</h3>
-              <p className="text-gray-600 mb-6">We believe in building lasting relationships through honest communication and transparent dealings.</p>
+              <p className="text-gray-600 mb-6">
+                We are committed to fostering relationships built on mutual respect, honesty, and transparency. Our
+                actions are driven by integrity and a strong belief in ethical practices.
+              </p>
+              <p className="text-gray-600 mb-6">
+                Every interaction is guided by the principle of trust, ensuring that we exceed your expectations while
+                maintaining open and honest communication.
+              </p>
               <ul className="space-y-3">
                 <li className="flex items-center">
-                  <Shield className="w-5 h-5 text-blue-600 mr-2" />
+                  <Shield className="w-5 h-5 text-blue-600 mr-2"/>
                   <span>100% Verified Listings</span>
                 </li>
                 <li className="flex items-center">
-                  <Users className="w-5 h-5 text-blue-600 mr-2" />
+                  <Users className="w-5 h-5 text-blue-600 mr-2"/>
                   <span>Professional Support</span>
                 </li>
+                <li className="flex items-center">
+                  <CheckCircle className="w-5 h-5 text-blue-600 mr-2"/>
+                  <span>Reliable Service Guarantee</span>
+                </li>
+                <li className="flex items-center">
+                  <Heart className="w-5 h-5 text-blue-600 mr-2"/>
+                  <span>Customer-Centric Approach</span>
+                </li>
               </ul>
+              <h3 className="text-2xl font-semibold mb-4 mt-12">Our Commitment</h3>
+              <p className="text-gray-600 mt-4">
+                From personalized support to verified solutions, we strive to set new standards of excellence in
+                everything we do.
+              </p>
             </div>
             <div>
               <img
-                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80"
-                alt="Our Values"
-                className="rounded-lg shadow-lg"
+                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80"
+                  alt="Our Values"
+                  className="rounded-lg shadow-lg mb-6"
               />
             </div>
           </div>
         </div>
       </section>
+
 
       {/* Contact Section */}
       <section className="py-16 bg-blue-600 text-white">
@@ -79,7 +100,7 @@ export const Home: React.FC = () => {
                 </div>
               </div>
             </div>
-              <form className="bg-white p-8 rounded-lg shadow-lg">
+            <form className="bg-white p-8 rounded-lg shadow-lg">
               <div className="mb-4">
                 <input
                   type="text"
@@ -105,7 +126,11 @@ export const Home: React.FC = () => {
                 Send Message
               </button>
             </form>
-            </div>
+            {/*<iframe className="bg-white p-8 rounded-lg shadow-lg" width="560" height="315" src="https://www.youtube.com/embed/ZGGMRFECJ9k?si=1vfmvmlYHFi-zHq7"
+                    title="YouTube video player" frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>*/}
+          </div>
         </div>
       </section>
     </div>

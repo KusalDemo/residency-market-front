@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { addBooking } from '../store/slices/bookingSlice';
+import { payBooking} from '../store/slices/bookingSlice';
 import { CreditCard, Calendar } from 'lucide-react';
 
 export const Payment: React.FC = () => {
@@ -11,6 +11,7 @@ export const Payment: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { properties } = useSelector((state: RootState) => state.property);
     const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+    const { bookings , error , loading} = useSelector((state: RootState) => state.booking);
     const property = properties.find(p => p.id === id);
 
     const [paymentDetails, setPaymentDetails] = useState({
@@ -19,6 +20,9 @@ export const Payment: React.FC = () => {
         cvv: '',
         name: ''
     });
+
+    if (loading) return <p className="flex justify-center mt-10">Payment processing...</p>;
+    if (error) return <p className="flex justify-center mt-10">Error: {error}</p>;
 
     if (!isAuthenticated) {
         navigate('/login');
@@ -30,22 +34,19 @@ export const Payment: React.FC = () => {
         return null;
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         // In a real app, this would process payment through Stripe
-        const booking = {
-            id: Date.now().toString(),
-            propertyId: property.id,
-            userId: user?.id || '',
-            bookingDate: new Date().toISOString(),
-            amount: property.price,
-            status: 'active' as const,
-            paymentId: 'mock_payment_' + Date.now(),
-            createdAt: new Date().toISOString(),
-        };
 
-        dispatch(addBooking(booking));
+        const booking1 = {
+            email: user?.email || '',
+            date: new Date().toISOString(),
+            propertyId: property.id
+        }
+
+        console.log(`Details 00 : ${booking1.email} | ${booking1.date} | ${booking1.propertyId}`)
+        const isBooked = await dispatch(payBooking(booking1));
         navigate('/bookings');
     };
 
