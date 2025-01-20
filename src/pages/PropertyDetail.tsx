@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Bed, Bath, Square, MapPin, Phone, Mail } from 'lucide-react';
 import { RootState } from '../store';
@@ -10,10 +10,21 @@ export const PropertyDetail: React.FC = () => {
   const {user} = useSelector((state: RootState) => state.auth);
   const property = properties.find(p => p.id === id);
 
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
+
 
   if (!property) {
     return <div className="container mx-auto px-6 py-12">Property not found</div>;
   }
+
+  const handleBooking = () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    navigate(`/payment/${property.id}`);
+  };
 
   return (
     <div className="container mx-auto px-6 py-12">
@@ -39,7 +50,7 @@ export const PropertyDetail: React.FC = () => {
           <h1 className="text-3xl font-bold mb-4">{property.title}</h1>
           <div className="flex items-center text-gray-600 mb-6">
             <MapPin className="h-5 w-5 mr-2" />
-            <span>{property.facilities.location}</span>
+            <span>{property.city}</span>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <div className="text-3xl font-bold text-blue-600 mb-6">
@@ -47,20 +58,23 @@ export const PropertyDetail: React.FC = () => {
             </div>
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="flex items-center">
-                <Bed className="h-5 w-5 mr-2 text-gray-600" />
+                <Bed className="h-5 w-5 mr-2 text-gray-600"/>
                 <span>{property.facilities.bedrooms} Beds</span>
               </div>
               <div className="flex items-center">
-                <Bath className="h-5 w-5 mr-2 text-gray-600" />
+                <Bath className="h-5 w-5 mr-2 text-gray-600"/>
                 <span>{property.facilities.bathrooms} Baths</span>
               </div>
               <div className="flex items-center">
-                <Square className="h-5 w-5 mr-2 text-gray-600" />
+                <Square className="h-5 w-5 mr-2 text-gray-600"/>
                 <span>{property.facilities.area} sqft</span>
               </div>
             </div>
-            <button className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors">
-              Book Viewing
+            <button
+                onClick={handleBooking}
+                className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Book Now
             </button>
           </div>
 
