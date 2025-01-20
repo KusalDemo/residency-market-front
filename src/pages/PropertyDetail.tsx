@@ -78,7 +78,7 @@ export const PropertyDetail: React.FC = () => {
               </div>
               <div className="flex items-center">
                 <Mail className="h-5 w-5 mr-3 text-blue-600" />
-                <span>{user.email}</span>
+                <span>example@example.com</span>
               </div>
             </div>
           </div>

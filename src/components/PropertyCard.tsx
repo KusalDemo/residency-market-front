@@ -44,7 +44,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           className="w-full h-full object-cover"
         />
         <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full">
-          ${property.price.toLocaleString()}
+          ${property.price ? property.price.toLocaleString() : '1000'}
         </div>
         {isAuthenticated && (
           <button
@@ -63,15 +63,15 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         <div className="flex justify-between text-gray-500">
           <div className="flex items-center">
             <Bed className="h-5 w-5 mr-1" />
-            <span>{property.facilities.bedrooms}</span>
+            <span>{property.facilities.bedrooms || 'N/A'}</span>
           </div>
           <div className="flex items-center">
             <Bath className="h-5 w-5 mr-1" />
-            <span>{property.facilities.bathrooms}</span>
+            <span>{property.facilities.bathrooms || 'N/A'}</span>
           </div>
           <div className="flex items-center">
             <Square className="h-5 w-5 mr-1" />
-            <span>{property.facilities.area} sqft</span>
+            <span>{property.facilities.area || 'N/A'} sqft</span>
           </div>
         </div>
         {showRemove && (

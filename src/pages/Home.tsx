@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Hero } from '../components/Hero';
 import { Home as HomeIcon, Shield, Users, Phone } from 'lucide-react';
 
@@ -70,16 +70,16 @@ export const Home: React.FC = () => {
               <p className="mb-8">Have questions about our properties or services? Our team is here to help!</p>
               <div className="space-y-4">
                 <div className="flex items-center">
-                  <Phone className="w-6 h-6 mr-3" />
+                  <Phone className="w-6 h-6 mr-3"/>
                   <span>(94) 81 2300 123</span>
                 </div>
                 <div className="flex items-center">
-                  <HomeIcon className="w-6 h-6 mr-3" />
+                  <HomeIcon className="w-6 h-6 mr-3"/>
                   <span>1A/2 Sisila , Katugastota ,Kandy 20000</span>
                 </div>
               </div>
             </div>
-            <form className="bg-white p-8 rounded-lg shadow-lg">
+              <form className="bg-white p-8 rounded-lg shadow-lg">
               <div className="mb-4">
                 <input
                   type="text"
@@ -105,7 +105,7 @@ export const Home: React.FC = () => {
                 Send Message
               </button>
             </form>
-          </div>
+            </div>
         </div>
       </section>
     </div>

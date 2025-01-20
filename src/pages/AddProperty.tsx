@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProperty, removeProperty } from '../store/slices/propertySlice';
+import { createProperty, removeProperty} from '../store/slices/propertySlice';
 import { RootState } from '../store';
 import { Residency } from '../types';
 import { PropertyCard } from '../components/PropertyCard';
@@ -11,6 +11,7 @@ export const AddProperty: React.FC = () => {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
   const { properties } = useSelector((state: RootState) => state.property);
+
 
   const [formData, setFormData] = useState({
     title: '',
@@ -32,29 +33,36 @@ export const AddProperty: React.FC = () => {
 
   const userProperties = properties.filter(property => property.userEmail === user?.email);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newProperty: Residency = {
-      id: Date.now().toString(),
-      title: formData.title,
-      description: formData.description,
-      price: parseFloat(formData.price),
-      address: formData.address,
-      city: formData.city,
-      country: formData.country,
-      image: formData.image,
-      facilities: {
-        bedrooms: parseInt(formData.bedrooms),
-        bathrooms: parseFloat(formData.bathrooms),
-        area: parseFloat(formData.area),
-        features: []
-      },
-      userEmail: user?.email || '',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    dispatch(addProperty(newProperty));
-    navigate('/properties');
+
+    try {
+      const newProperty: Residency = {
+        id: Date.now().toString(),
+        title: formData.title,
+        description: formData.description,
+        price: parseInt(formData.price),
+        address: formData.address,
+        city: formData.city,
+        country: formData.country,
+        image: formData.image,
+        facilities: {
+          bedrooms: parseInt(formData.bedrooms),
+          bathrooms: parseInt(formData.bathrooms),
+          area: parseInt(formData.area)
+        },
+        userEmail: user?.email || '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      console.log(`new residency details : ${newProperty.userEmail} ${newProperty.createdAt} ${newProperty.updatedAt}`);
+      await dispatch(createProperty(newProperty));
+      // navigate('/properties');
+    } catch (err) {
+      console.error('Error adding property:', err);
+    }
+
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

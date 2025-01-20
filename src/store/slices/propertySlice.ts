@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import { Residency } from '../../types';
-import {fetchProperties} from "../../api/propertyApi.ts";
+import {fetchProperties,addProperty} from "../../api/propertyApi.ts";
 
 interface PropertyState {
   properties: Residency[];
@@ -23,6 +23,27 @@ export const getProperties = createAsyncThunk(
         return residencies;
     }
 );
+/*export const createProperty = createAsyncThunk(
+    'residency/create',
+    async (property: Residency) => {
+        let residencies = await addProperty(property);
+        return residencies;
+    }
+);*/
+export const createProperty = createAsyncThunk(
+    'residency/create',
+    async (property: Residency, { rejectWithValue }) => {
+      try {
+        const residencies = await addProperty(property);
+        console.log(`residencies : ${residencies.id}`);
+        return residencies;
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to create residency.';
+        return rejectWithValue(message);
+      }
+    }
+);
+
 
 const propertySlice = createSlice({
   name: 'property',
@@ -55,9 +76,21 @@ const propertySlice = createSlice({
         .addCase(getProperties.rejected, (state, action) => {
           state.loading = false;
           state.error = action.error.message || 'Failed to load properties';
+        })
+        .addCase(createProperty.pending, (state) => {
+            state.loading = true;
+        })
+        .addCase(createProperty.fulfilled, (state, action) => {
+            state.loading = false;
+            state.properties.push(action.payload); // Assuming the backend returns the created property
+        })
+        .addCase(createProperty.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
         });
+
   },
 });
 
-export const { setProperties, setSelectedProperty, addProperty, removeProperty } = propertySlice.actions;
+export const { setProperties, setSelectedProperty, removeProperty } = propertySlice.actions;
 export default propertySlice.reducer;
