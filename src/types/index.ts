@@ -1,16 +1,21 @@
 export interface Residency {
-  id: string;
+  id:string;
   title: string;
   description: string;
+  location: string;
   price: number;
-  address: string;
-  city: string;
-  country: string;
-  image: string;
-  facilities: any;
-  userEmail: string;
-  createdAt: string;
-  updatedAt: string;
+  owner: string;
+  isAvailable: boolean;
+  facilities: [
+    {
+      bedrooms: number,
+      bathrooms: number,
+      area: number
+    }
+  ];
+  images: string[];
+  bookings: string[];
+  inquiries: string[];
 }
 
 export interface User {
@@ -35,4 +40,21 @@ export interface Article {
   urlToImage: string;
   publishedAt: string;
   content: string;
+}
+
+export interface Inquiry {
+  id: string;
+  residencyId: string;
+  userId: string;
+  userEmail: string;
+  message: string;
+  date: string;
+  replies: Reply[];
+}
+
+export interface Reply {
+  id: string;
+  userEmail: string;
+  message: string;
+  date: string;
 }

@@ -39,7 +39,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
     <Link to={`/property/${property.id}`} className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
       <div className="relative h-48">
         <img
-          src={property.image}
+          src={property.images[0]}
           alt={property.title}
           className="w-full h-full object-cover"
         />
@@ -59,19 +59,19 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
       </div>
       <div className="p-4">
         <h3 className="text-xl font-semibold mb-2">{property.title}</h3>
-        <p className="text-gray-600 mb-4">{property.city}, {property.country}</p>
+        <p className="text-gray-600 mb-4">{property.location}</p>
         <div className="flex justify-between text-gray-500">
           <div className="flex items-center">
             <Bed className="h-5 w-5 mr-1" />
-            <span>{property.facilities.bedrooms || 'N/A'}</span>
+            <span>{property.facilities[0]?.bedrooms || 'N/A'}</span>
           </div>
           <div className="flex items-center">
             <Bath className="h-5 w-5 mr-1" />
-            <span>{property.facilities.bathrooms || 'N/A'}</span>
+            <span>{property.facilities[0].bathrooms || 'N/A'}</span>
           </div>
           <div className="flex items-center">
             <Square className="h-5 w-5 mr-1" />
-            <span>{property.facilities.area || 'N/A'} sqft</span>
+            <span>{property.facilities[0].area || 'N/A'} sqft</span>
           </div>
         </div>
         {showRemove && (
