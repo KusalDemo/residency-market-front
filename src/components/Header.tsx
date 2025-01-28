@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Home, User, LogIn, LogOut, Menu, X, Heart, Calendar } from 'lucide-react';
+import {Home, LogIn, LogOut, Menu, X, Heart, Calendar, MessageCircle} from 'lucide-react';
 import { RootState } from '../store';
 import { logout } from '../store/slices/authSlice';
 
@@ -52,6 +52,9 @@ export const Header: React.FC = () => {
                     <Link to="/bookings" className="text-gray-600 hover:text-blue-600">
                       <Calendar className="h-5 w-5" />
                     </Link>
+                    <Link to="/inquiries" className="text-gray-600 hover:text-blue-600">
+                      <MessageCircle className="h-5 w-5" />
+                    </Link>
                   </>
               )}
               {isAuthenticated ? (
@@ -85,6 +88,7 @@ export const Header: React.FC = () => {
                       <Link to="/add-property" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Add Property</Link>
                       <Link to="/favorites" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Favorites</Link>
                       <Link to="/bookings" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Bookings</Link>
+                      <Link to="/inquiries" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Inquiries</Link>
                     </>
                 )}
                 {isAuthenticated ? (

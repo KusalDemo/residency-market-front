@@ -15,6 +15,7 @@ import {PropertyDetail} from "./pages/PropertyDetail.tsx";
 import {Payment} from "./pages/Payment.tsx";
 import {Bookings} from "./pages/Bookings.tsx";
 import TourismNews from "./pages/News.tsx";
+import {Inquiries} from "./pages/Inquiries.tsx";
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
                             <Route path="/payment/:id" element={<Payment />} />
                             <Route path="/bookings" element={<Bookings />} />
                             <Route path="/news" element={<TourismNews />} />
+                            <Route path="/inquiries" element={<Inquiries />} />
                         </Routes>
                     </main>
                     <Footer/>
