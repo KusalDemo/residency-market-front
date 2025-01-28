@@ -1,11 +1,12 @@
 import axios from "axios";
 import {Residency} from "../types";
 
-const BASE_URL = 'http://127.0.0.1:8000/api/v1'
+const BASE_URL = 'http://127.0.0.1:3000/api'
 
 export const fetchProperties = async () => {
     try{
-        let axiosResponse = await axios.get(`${BASE_URL}/residency`);
+        const axiosResponse = await axios.get(`${BASE_URL}/residency/`);
+        console.log(`axiosResponse : ${JSON.stringify(axiosResponse)}`);
         return axiosResponse.data
     }catch (err){
         throw new Error(err.message);
