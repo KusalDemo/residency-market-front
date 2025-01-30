@@ -19,24 +19,24 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 }) => {
   const dispatch = useDispatch();
   const { isAuthenticated, favorites } = useSelector((state: RootState) => state.auth);
-  const isFavorite = favorites.includes(property.id);
+  const isFavorite = favorites.includes(property._id);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (isAuthenticated) {
-      dispatch(toggleFavorite(property.id));
+      dispatch(toggleFavorite(property._id));
     }
   };
 
   const handleRemove = (e: React.MouseEvent) => {
     e.preventDefault();
     if (onRemove) {
-      onRemove(property.id);
+      onRemove(property._id);
     }
   };
 
   return (
-    <Link to={`/property/${property.id}`} className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
+    <Link to={`/property/${property._id}`} className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105">
       <div className="relative h-48">
         <img
           src={property.images[0]}

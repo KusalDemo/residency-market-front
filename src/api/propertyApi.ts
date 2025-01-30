@@ -13,10 +13,20 @@ export const fetchProperties = async () => {
     }
 }
 
+export const getResidencyById = async (id: string) => {
+    try{
+        const axiosResponse = await axios.get(`${BASE_URL}/residency/get/${id}`);
+        console.log(`axiosResponse : ${JSON.stringify(axiosResponse)}`);
+        return axiosResponse.data
+    }catch (err){
+        throw new Error(err.message);
+    }
+}
+
 export const addProperty = async (property: Residency) => {
     try{
         console.log(`Residency to save : ${JSON.stringify(property)}`);
-        const axiosResponse = await axios.post(`${BASE_URL}/residency/create`, { data: property });
+        const axiosResponse = await axios.post(`${BASE_URL}/residency/create`, property);
         console.log(`axiosResponse : ${JSON.stringify(axiosResponse)}`);
         return axiosResponse.data
     }catch (err){

@@ -22,9 +22,11 @@ export const AddProperty: React.FC = () => {
     city: '',
     country: '',
     image: '',
-    bedrooms: '',
-    bathrooms: '',
-    area: ''
+    image2: '',
+    image3: '',
+    bedrooms: 0,
+    bathrooms:0,
+    area: 0
   });
 
   if (!isAuthenticated) {
@@ -32,31 +34,34 @@ export const AddProperty: React.FC = () => {
     return null;
   }
 
-  const userProperties = properties.filter(property => property.userEmail === user?.email);
+  const userProperties = properties.filter(property => property.owner === user?.email);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+
     try {
       const newProperty: Residency = {
-        id: Date.now().toString(),
+        _id:" ",
         title: formData.title,
         description: formData.description,
+        location: formData.address + ', ' + formData.city + ', ' + formData.country,
         price: parseInt(formData.price),
-        address: formData.address,
-        city: formData.city,
-        country: formData.country,
-        image: formData.image,
-        facilities: {
-          bedrooms: parseInt(formData.bedrooms),
-          bathrooms: parseInt(formData.bathrooms),
-          area: parseInt(formData.area)
-        },
-        userEmail: user?.email || '',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        owner: "6794ebefd1f7918bbc628fcf",
+        isAvailable: true,
+        facilities: [{
+          bedrooms:formData.bedrooms,
+          bathrooms: formData.bathrooms,
+          area: formData.area
+        }],
+        images: [
+          formData.image,
+          formData.image2,
+          formData.image3
+        ],
+        bookings: [],
+        inquiries: []
       };
-
 
       await dispatch(createProperty(newProperty));
       // navigate('/properties');
@@ -90,13 +95,15 @@ export const AddProperty: React.FC = () => {
       title: property.title,
       description: property.description,
       price: property.price.toString(),
-      address: property.address,
-      city: property.city,
-      country: property.country,
-      image: property.image,
-      bedrooms: property.facilities.bedrooms,
-      bathrooms: property.facilities.bathrooms,
-      area: property.facilities.area
+      address: property.location,
+      city: property.location,
+      country: property.location,
+      image: property.images[0],
+      image2: property.images[1],
+      image3: property.images[2],
+      bedrooms:  property.facilities[0].bedrooms,
+      bathrooms: property.facilities[0].bathrooms,
+      area: property.facilities[0].area
     });
   };
 
@@ -109,7 +116,7 @@ export const AddProperty: React.FC = () => {
           ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {userProperties.map((property) => (
-                    <div key={property.id} className="relative">
+                    <div key={property._id} className="relative">
                       <PropertyCard property={property} />
                       <div className="absolute top-4 left-4 space-x-2">
                         <button
@@ -119,13 +126,13 @@ export const AddProperty: React.FC = () => {
                           Edit
                         </button>
                         <button
-                            onClick={() => handleDelete(property.id)}
+                            onClick={() => handleDelete(property._id)}
                             className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
                         >
                           Delete
                         </button>
                       </div>
-                      {showDeleteConfirm === property.id && (
+                      {showDeleteConfirm === property._id && (
                           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                             <div className="bg-white p-6 rounded-lg max-w-sm mx-4">
                               <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
@@ -140,7 +147,7 @@ export const AddProperty: React.FC = () => {
                                   Cancel
                                 </button>
                                 <button
-                                    onClick={() => confirmDelete(property.id)}
+                                    onClick={() => confirmDelete(property._id)}
                                     className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
                                 >
                                   Delete
@@ -299,6 +306,32 @@ export const AddProperty: React.FC = () => {
                   required
               />
             </div>
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Image URL 2
+              </label>
+              <input
+                  type="url"
+                  name="image2"
+                  value={formData.image2}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md"
+                  required
+              />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Image URL 3
+              </label>
+              <input
+                  type="url"
+                  name="image3"
+                  value={formData.image3}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md"
+                  required
+              />
+            </div>
 
             <div className="col-span-2">
               <button
@@ -320,9 +353,11 @@ export const AddProperty: React.FC = () => {
                           city: '',
                           country: '',
                           image: '',
-                          bedrooms: '',
-                          bathrooms: '',
-                          area: ''
+                          image2: '',
+                          image3: '',
+                          bedrooms: 0,
+                          bathrooms: 0,
+                          area: 0
                         });
                       }}
                       className="w-full mt-4 bg-gray-200 text-gray-800 py-3 rounded-md hover:bg-gray-300 transition-colors"

@@ -60,11 +60,11 @@ const propertySlice = createSlice({
     },
     removeProperty: (state, action: PayloadAction<string>) => {
       state.properties = state.properties.filter(
-        property => property.id !== action.payload
+        property => property._id !== action.payload
       );
     },
       updateProperty: (state, action: PayloadAction<Residency>) => {
-          const index = state.properties.findIndex(p => p.id === action.payload.id);
+          const index = state.properties.findIndex(p => p._id === action.payload._id);
           if (index !== -1) {
               state.properties[index] = action.payload;
           }
@@ -83,12 +83,14 @@ const propertySlice = createSlice({
           state.loading = false;
           state.error = action.error.message || 'Failed to load properties';
         })
+      builder
         .addCase(createProperty.pending, (state) => {
+            console.log(`createProperty.pending...`)
             state.loading = true;
         })
         .addCase(createProperty.fulfilled, (state, action) => {
             state.loading = false;
-            state.properties.push(action.payload); // Assuming the backend returns the created property
+            state.properties.push(action.payload);
         })
         .addCase(createProperty.rejected, (state, action) => {
             state.loading = false;
