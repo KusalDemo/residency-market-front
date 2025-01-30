@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProperty, removeProperty} from '../store/slices/propertySlice';
+import {createProperty, getPropertiesByUserId, removeProperty} from '../store/slices/propertySlice';
 import { RootState } from '../store';
 import { Residency } from '../types';
 import { PropertyCard } from '../components/PropertyCard';
+
 
 export const AddProperty: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
-  const { properties } = useSelector((state: RootState) => state.property);
+  const { userProperties, loading, error } = useSelector((state: RootState) => state.property);
   const [editingProperty, setEditingProperty] = useState<Residency | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log(`isAuthenticated: ${isAuthenticated}`);
+    if (isAuthenticated) {
+      dispatch(getPropertiesByUserId("6794ebefd1f7918bbc628fcf"));
+    }
+  }, [dispatch]);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -34,7 +42,7 @@ export const AddProperty: React.FC = () => {
     return null;
   }
 
-  const userProperties = properties.filter(property => property.owner === user?.email);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

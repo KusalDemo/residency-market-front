@@ -1,9 +1,10 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import { Residency } from '../../types';
-import {fetchProperties,addProperty} from "../../api/propertyApi.ts";
+import {fetchProperties, addProperty, fetchPropertiesByUserId} from "../../api/propertyApi.ts";
 
 interface PropertyState {
   properties: Residency[];
+  userProperties: Residency[];
   selectedProperty: Residency | null;
   loading: boolean;
   error: string | null;
@@ -11,6 +12,7 @@ interface PropertyState {
 
 const initialState: PropertyState = {
   properties: [],
+    userProperties: [],
   selectedProperty: null,
   loading: false,
   error: null,
@@ -43,6 +45,14 @@ export const createProperty = createAsyncThunk(
       }
     }
 );
+
+export const getPropertiesByUserId = createAsyncThunk(
+    'residency/user',
+    async (userId: string) => {
+        let residencies = await fetchPropertiesByUserId(userId);
+        return residencies;
+    }
+)
 
 
 const propertySlice = createSlice({
@@ -95,8 +105,20 @@ const propertySlice = createSlice({
         .addCase(createProperty.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload as string;
+        })
+      builder
+        .addCase(getPropertiesByUserId.pending, (state) => {
+            console.log(`getPropertiesByUserId.pending...`)
+            state.loading = true;
+        })
+        .addCase(getPropertiesByUserId.fulfilled, (state, action) => {
+            state.loading = false;
+            state.userProperties = action.payload;
+        })
+        .addCase(getPropertiesByUserId.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
         });
-
   },
 });
 
