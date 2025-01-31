@@ -43,3 +43,12 @@ export const addProperty = async (property: Residency) => {
         throw new Error(err.message);
     }
 }
+
+export const updateProperty = async (propertyId:string, property:Residency) => {
+    try{
+        let axiosResponse = await axios.put(`${BASE_URL}/residency/update/${propertyId}`, property);
+        return axiosResponse.data
+    }catch (error){
+        throw new Error(error.message);
+    }
+}
