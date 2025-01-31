@@ -123,9 +123,13 @@ export const AddProperty: React.FC = () => {
         setShowDeleteConfirm(id);
     };
 
-    const confirmDelete = (id: string) => {
-        dispatch(removeProperty(id));
-        setShowDeleteConfirm(null);
+    const confirmDelete = async (id: string) => {
+        try{
+            dispatch(await removeProperty(id));
+            setShowDeleteConfirm(null);
+        }catch (err){
+            console.error('Error deleting property:', err);
+        }
     };
 
     const handleEdit = (propertyId: string, property: Residency) => {

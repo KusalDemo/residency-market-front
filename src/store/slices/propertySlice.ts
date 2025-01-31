@@ -1,6 +1,12 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import { Residency } from '../../types';
-import {fetchProperties, addProperty, fetchPropertiesByUserId, updateProperty} from "../../api/propertyApi.ts";
+import {
+    fetchProperties,
+    addProperty,
+    fetchPropertiesByUserId,
+    updateProperty,
+    deleteProperty
+} from "../../api/propertyApi.ts";
 
 interface PropertyState {
   properties: Residency[];
@@ -62,6 +68,14 @@ export const updatePropertyDetails = createAsyncThunk(
     }
 )
 
+export const removeProperty = createAsyncThunk(
+    'residency/delete',
+    async (propertyId: string) => {
+        await deleteProperty(propertyId);
+        return propertyId;
+    }
+)
+
 
 const propertySlice = createSlice({
   name: 'property',
@@ -72,14 +86,6 @@ const propertySlice = createSlice({
     },
     setSelectedProperty: (state, action: PayloadAction<Residency>) => {
       state.selectedProperty = action.payload;
-    },
-    addProperty: (state, action: PayloadAction<Residency>) => {
-      state.properties.push(action.payload);
-    },
-    removeProperty: (state, action: PayloadAction<string>) => {
-      state.properties = state.properties.filter(
-        property => property._id !== action.payload
-      );
     }
   },
   extraReducers: (builder) => {
@@ -133,9 +139,23 @@ const propertySlice = createSlice({
         .addCase(updatePropertyDetails.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload as string;
+        })
+      builder
+        .addCase(removeProperty.pending, (state) => {
+            console.log(`removeProperty.pending...`)
+            state.loading = true;
+        })
+        .addCase(removeProperty.fulfilled, (state, action) => {
+            console.log(`removeProperty.fulfilled...`)
+            state.properties = state.properties.filter(property => property._id !== action.payload);
+            state.loading = false;
+        })
+        .addCase(removeProperty.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
         });
   },
 });
 
-export const { setProperties, setSelectedProperty, removeProperty } = propertySlice.actions;
+export const { setProperties, setSelectedProperty } = propertySlice.actions;
 export default propertySlice.reducer;

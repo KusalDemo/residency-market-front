@@ -52,3 +52,12 @@ export const updateProperty = async (propertyId:string, property:Residency) => {
         throw new Error(error.message);
     }
 }
+
+export const deleteProperty = async (propertyId:string) => {
+    try{
+      let axiosResponse = await axios.delete(`${BASE_URL}/residency/delete/${propertyId}`);
+      return axiosResponse.data
+    }catch (error){
+        throw new Error(error.message);
+    }
+}
