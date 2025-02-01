@@ -43,13 +43,11 @@ export interface Article {
 }
 
 export interface Inquiry {
-  id: string;
-  residencyId: string;
+  _id: string;
+  residency: string;
   userId: string;
-  userEmail: string;
   message: string;
-  date: string;
-  replies: Reply[];
+  createdAt: string;
 }
 
 export interface Reply {

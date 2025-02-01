@@ -3,8 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {Bed, Bath, Square, MapPin, Phone, Mail, MessageCircle} from 'lucide-react';
 import { RootState } from '../store';
-import { addInquiry } from '../store/slices/inquirySlice';
+import {addInquiry, createInquiry} from '../store/slices/inquirySlice';
 import { useDispatch } from 'react-redux';
+import {Inquiry} from "../types";
 
 export const PropertyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,24 +33,24 @@ export const PropertyDetail: React.FC = () => {
     navigate(`/payment/${property._id}`);
   };
 
-  const handleInquiry = (e: React.FormEvent) => {
+  const handleInquiry = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
 
-    const inquiry = {
-      id: Date.now().toString(),
+    const inquiry:Inquiry = {
+      id: "",
       residencyId: property._id,
-      userId: user?.id || '',
+      userId: user?.id || '6794ebefd1f7918bbc628fcf',
       userEmail: user?.email || '',
       message: inquiryMessage,
       date: new Date().toISOString(),
       replies: []
     };
 
-    dispatch(addInquiry(inquiry));
+    await dispatch(createInquiry(inquiry));
     setInquiryMessage('');
     setShowInquiryForm(false);
     alert('Inquiry sent successfully!');
