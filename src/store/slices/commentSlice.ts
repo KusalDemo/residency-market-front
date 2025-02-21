@@ -27,7 +27,7 @@ export const addComment = createAsyncThunk(
     async (comment: Comment, { rejectWithValue }) => {
         try {
             const response = await addCommentApi(comment);
-            return response.data;
+            return response;
         } catch (err) {
             return rejectWithValue(err.message);
         }
