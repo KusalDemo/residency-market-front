@@ -22,3 +22,44 @@ export const addComment = async (comment:Comment) => {
         throw new Error(error.message);
     }
 }
+
+export const updateComment = async (commentId: string, comment: Comment) => {
+    try {
+        const axiosResponse = await axios.put(`${BASE_URL}/comment/update/${commentId}`, comment);
+        return axiosResponse.data;
+    } catch (error) {
+        console.log(`Error occurred: ${error.message}`);
+        throw new Error(error.message);
+    }
+};
+
+export const deleteComment = async (commentId: string) => {
+    try {
+        const axiosResponse = await axios.delete(`${BASE_URL}/comment/delete/${commentId}`);
+        return axiosResponse.data;
+    } catch (error) {
+        console.log(`Error occurred: ${error.message}`);
+        throw new Error(error.message);
+    }
+};
+
+export const upvoteComment = async (commentId: string) => {
+    try {
+        console.log(`commentId : ${commentId} | ${BASE_URL}/comment/upvote/${commentId}`)
+        const axiosResponse = await axios.put(`${BASE_URL}/comment/upvote/${commentId}`);
+        return axiosResponse.data;
+    } catch (error) {
+        console.log(`Error occurred: ${error.message}`);
+        throw new Error(error.message);
+    }
+};
+
+export const downvoteComment = async (commentId: string) => {
+    try {
+        const axiosResponse = await axios.put(`${BASE_URL}/comment/downvote/${commentId}`);
+        return axiosResponse.data;
+    } catch (error) {
+        console.log(`Error occurred: ${error.message}`);
+        throw new Error(error.message);
+    }
+};

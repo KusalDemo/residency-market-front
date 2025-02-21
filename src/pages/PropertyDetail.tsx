@@ -1,11 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
-import {Bed, Bath, Square, MapPin, Phone, Mail, MessageCircle, ThumbsUp, ThumbsDown} from 'lucide-react';
+import {Bed, Bath, Square, MapPin, Phone, Mail, MessageCircle, ThumbsUp, ThumbsDown, Edit, Trash} from 'lucide-react';
 import {RootState} from '../store';
 import {addInquiry, createInquiry} from '../store/slices/inquirySlice';
 import {Inquiry} from "../types";
-import {downvoteComment, getCommentsForResidency, upvoteComment, addComment} from "../store/slices/commentSlice.ts";
+import {
+    downvoteComment,
+    getCommentsForResidency,
+    upvoteComment,
+    addComment,
+    updateComment,
+    deleteComment
+} from "../store/slices/commentSlice.ts";
 import Cookies from "js-cookie";
 
 export const PropertyDetail: React.FC = () => {
@@ -22,6 +29,8 @@ export const PropertyDetail: React.FC = () => {
     const [showInquiryForm, setShowInquiryForm] = useState(false);
     const [inquiryMessage, setInquiryMessage] = useState('');
     const [commentMessage, setCommentMessage] = useState('');
+    const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+    const [editedCommentMessage, setEditedCommentMessage] = useState('');
 
     useEffect(() => {
         if (id) {
@@ -62,16 +71,17 @@ export const PropertyDetail: React.FC = () => {
         alert('Inquiry sent successfully!');
     };
 
-    const handleVote = (commentId: string, voteType: 'up' | 'down') => {
+    const handleVote = async (commentId: string, voteType: 'up' | 'down') => {
         if (!isAuthenticated) {
             navigate('/login');
             return;
         }
 
+        console.log(`commentId: ${commentId}`); // Debugging: Check the commentId
         if (voteType === 'up') {
-            dispatch(upvoteComment(commentId));
+            await dispatch(upvoteComment(commentId));
         } else {
-            dispatch(downvoteComment(commentId));
+            await dispatch(downvoteComment(commentId));
         }
     };
 
@@ -83,7 +93,7 @@ export const PropertyDetail: React.FC = () => {
         }
 
         const newComment = {
-            id:"",
+            id: "",
             residency: property._id,
             user: Cookies.get('user_id') || '',
             message: commentMessage,
@@ -94,7 +104,39 @@ export const PropertyDetail: React.FC = () => {
 
         await dispatch(addComment(newComment));
         setCommentMessage('');
-        alert('Comment added successfully!',newComment);
+        alert('Comment added successfully!');
+    };
+
+    const handleUpdateComment = async (commentId: string) => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+
+        const updatedComment = {
+            id: commentId,
+            residency: property._id,
+            user: Cookies.get('user_id') || '',
+            message: editedCommentMessage,
+            upVotes: 0,
+            downVotes: 0,
+            createdAt: new Date().toISOString(),
+        };
+
+        await dispatch(updateComment({commentId, comment: updatedComment}));
+        setEditingCommentId(null);
+        setEditedCommentMessage('');
+        alert('Comment updated successfully!');
+    };
+
+    const handleDeleteComment = async (commentId: string) => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+
+        await dispatch(deleteComment(commentId));
+        alert('Comment deleted successfully!');
     };
 
     return (
@@ -118,7 +160,7 @@ export const PropertyDetail: React.FC = () => {
                     <div className="space-y-6 mt-5">
                         <h2 className="text-2xl font-semibold mb-4">Comments</h2>
                         {comments.map((comment) => (
-                            <div key={comment.id} className="bg-white p-6 rounded-lg shadow-md">
+                            <div key={comment._id} className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex justify-between items-start mb-4">
                                     <div>
                                         <p className="font-medium text-blue-600">{comment.user}</p>
@@ -127,15 +169,34 @@ export const PropertyDetail: React.FC = () => {
                                         </p>
                                     </div>
                                     <div className="flex items-center space-x-4">
+                                        {comment.user === Cookies.get('user_id') && (
+                                            <>
+                                                <button
+                                                    onClick={() => {
+                                                        setEditingCommentId(comment._id);
+                                                        setEditedCommentMessage(comment.message);
+                                                    }}
+                                                    className="text-gray-600 hover:text-blue-600"
+                                                >
+                                                    <Edit className="h-4 w-4"/>
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteComment(comment._id)}
+                                                    className="text-gray-600 hover:text-red-600"
+                                                >
+                                                    <Trash className="h-4 w-4"/>
+                                                </button>
+                                            </>
+                                        )}
                                         <button
-                                            onClick={() => handleVote(comment.id, 'up')}
+                                            onClick={() => handleVote(comment._id, 'up')}
                                             className="flex items-center space-x-1 text-gray-600 hover:text-blue-600"
                                         >
                                             <ThumbsUp className="h-4 w-4"/>
                                             <span>{comment.upVotes}</span>
                                         </button>
                                         <button
-                                            onClick={() => handleVote(comment.id, 'down')}
+                                            onClick={() => handleVote(comment._id, 'down')}
                                             className="flex items-center space-x-1 text-gray-600 hover:text-red-600"
                                         >
                                             <ThumbsDown className="h-4 w-4"/>
@@ -143,7 +204,26 @@ export const PropertyDetail: React.FC = () => {
                                         </button>
                                     </div>
                                 </div>
-                                <p className="text-gray-700">{comment.message}</p>
+                                {editingCommentId === comment._id ? (
+                                    <div className="mt-4">
+                                        <textarea
+                                            value={editedCommentMessage}
+                                            onChange={(e) => setEditedCommentMessage(e.target.value)}
+                                            className="w-full p-3 border border-gray-300 rounded-md mb-4"
+                                            rows={4}
+                                            placeholder="Edit your comment..."
+                                            required
+                                        />
+                                        <button
+                                            onClick={() => handleUpdateComment(comment._id)}
+                                            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+                                        >
+                                            Update Comment
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <p className="text-gray-700">{comment.message}</p>
+                                )}
                             </div>
                         ))}
                         <form onSubmit={handleAddComment} className="bg-white p-6 rounded-lg shadow-md">
