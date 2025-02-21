@@ -13,7 +13,7 @@ export const Payment: React.FC = () => {
     const { properties } = useSelector((state: RootState) => state.property);
     const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
     const {  error , loading} = useSelector((state: RootState) => state.booking);
-    const property = properties.find(p => p.id === id);
+    const property = properties.find(p => p._id === id);
 
     const [paymentDetails, setPaymentDetails] = useState({
         cardNumber: '',
@@ -49,7 +49,7 @@ export const Payment: React.FC = () => {
         const booking1 = {
             email: user?.email || '',
             date: new Date().toISOString(),
-            propertyId: property.id
+            propertyId: property._id
         }
 
         console.log(`Details 00 : ${booking1.email} | ${booking1.date} | ${booking1.propertyId}`)
@@ -72,13 +72,13 @@ export const Payment: React.FC = () => {
                     <h2 className="text-xl font-semibold mb-4">Property Details</h2>
                     <div className="flex items-start space-x-4">
                         <img
-                            src={property.image}
+                            src={property.images[0]}
                             alt={property.title}
                             className="w-24 h-24 object-cover rounded-md"
                         />
                         <div>
                             <h3 className="font-semibold">{property.title}</h3>
-                            <p className="text-gray-600">{property.address}</p>
+                            <p className="text-gray-600">{property.location}</p>
                             <p className="text-xl font-bold text-blue-600 mt-2">
                                 ${property.price.toLocaleString()}
                             </p>

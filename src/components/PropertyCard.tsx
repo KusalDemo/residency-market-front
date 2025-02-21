@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Bed, Bath, Square, Heart } from 'lucide-react';
 import { Residency } from '../types';
-import { toggleFavorite } from '../store/slices/authSlice';
+// import { toggleFavorite } from '../store/slices/authSlice';
 import { RootState } from '../store';
 
 interface PropertyCardProps {
@@ -18,15 +18,16 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   onRemove
 }) => {
   const dispatch = useDispatch();
-  const { isAuthenticated, favorites } = useSelector((state: RootState) => state.auth);
-  const isFavorite = favorites.includes(property._id);
+  //const { isAuthenticated, favorites } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  //const isFavorite = favorites.includes(property._id);
 
-  const handleFavoriteClick = (e: React.MouseEvent) => {
+  /*const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (isAuthenticated) {
       dispatch(toggleFavorite(property._id));
     }
-  };
+  };*/
 
   const handleRemove = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -46,7 +47,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full">
           ${property.price ? property.price.toLocaleString() : '1000'}
         </div>
-        {isAuthenticated && (
+        {/*{isAuthenticated && (
           <button
             onClick={handleFavoriteClick}
             className={`absolute top-4 left-4 p-2 rounded-full ${
@@ -55,7 +56,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           >
             <Heart className="h-5 w-5" fill={isFavorite ? 'currentColor' : 'none'} />
           </button>
-        )}
+        )}*/}
       </div>
       <div className="p-4">
         <h3 className="text-xl font-semibold mb-2">{property.title}</h3>

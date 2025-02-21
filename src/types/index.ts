@@ -26,6 +26,7 @@ export interface User {
   bookedVisits: any[];
   favResidenciesID: string[];
   Residency: Residency[];
+  comments: string[]
 }
 
 export interface Article {
@@ -55,4 +56,14 @@ export interface Reply {
   userEmail: string;
   message: string;
   date: string;
+}
+
+export interface Comment {
+  id: string;
+  user: string;
+  residency: string;
+  message: string;
+  createdAt: string;
+  upVotes: number;
+  downVotes: number;
 }
