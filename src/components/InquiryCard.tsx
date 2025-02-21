@@ -1,13 +1,25 @@
-import React, { useState } from "react";
-import { Inquiry } from "../types";
-import { Send } from "lucide-react";
+import React, {useState} from "react";
+import {Inquiry} from "../types";
+import {Send} from "lucide-react";
+import {useDispatch} from "react-redux";
+import {addReply} from "../store/slices/inquirySlice";
+import Cookies from "js-cookie";
 
-export const InquiryCard: React.FC<{ inquiry: Inquiry; isReceived?: boolean }> = ({ inquiry, isReceived = false }) => {
-    const [replyMessages, setReplyMessages] = useState<{ [key: string]: string }>({});
+export const InquiryCard: React.FC<{ inquiry: Inquiry; isReceived?: boolean }> = ({inquiry, isReceived = false}) => {
+    const dispatch = useDispatch();
+    const [replyMessage, setReplyMessage] = useState('');
 
-    const handleReply = (inquiryId: string) => {
-        console.log("Reply sent for", inquiryId, "Message:", replyMessages[inquiryId]);
-        setReplyMessages((prev) => ({ ...prev, [inquiryId]: "" }));
+    const handleReply = () => {
+        if (replyMessage.trim()) {
+            const reply = {
+                id: Date.now().toString(),
+                user: Cookies.get('user_id'), // Replace with actual user email
+                message: replyMessage,
+                date: new Date().toISOString()
+            };
+            dispatch(addReply({inquiryId: inquiry._id, reply}));
+            setReplyMessage('');
+        }
     };
 
     return (
@@ -34,22 +46,17 @@ export const InquiryCard: React.FC<{ inquiry: Inquiry; isReceived?: boolean }> =
 
             <div className="mt-4">
                 <textarea
-                    value={replyMessages[inquiry._id] || ''}
-                    onChange={(e) =>
-                        setReplyMessages((prev) => ({
-                            ...prev,
-                            [inquiry._id]: e.target.value,
-                        }))
-                    }
+                    value={replyMessage}
+                    onChange={(e) => setReplyMessage(e.target.value)}
                     placeholder="Write your reply..."
                     className="w-full p-3 border border-gray-300 rounded-md mb-2"
                     rows={2}
                 />
                 <button
-                    onClick={() => handleReply(inquiry._id)}
+                    onClick={handleReply}
                     className="flex items-center justify-center w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
                 >
-                    <Send className="h-4 w-4 mr-2" />
+                    <Send className="h-4 w-4 mr-2"/>
                     Reply
                 </button>
             </div>
