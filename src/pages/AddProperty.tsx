@@ -10,23 +10,18 @@ import {
 import {RootState} from '../store';
 import {Residency} from '../types';
 import {PropertyCard} from '../components/PropertyCard';
+import Cookies from "js-cookie";
 
 
 export const AddProperty: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {isAuthenticated, user} = useSelector((state: RootState) => state.auth);
-    const {userProperties, loading, error} = useSelector((state: RootState) => state.property);
+
+    const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+    const { userProperties } = useSelector((state: RootState) => state.property);
+    const userId = Cookies.get("user_id"); // Get user_id from cookies
+
     const [editingProperty, setEditingProperty] = useState<Residency | null>(null);
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
-
-    useEffect(() => {
-        console.log(`isAuthenticated: ${isAuthenticated}`);
-        if (isAuthenticated) {
-            dispatch(getPropertiesByUserId("6794ebefd1f7918bbc628fcf"));
-        }
-    }, [dispatch]);
-
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -41,6 +36,15 @@ export const AddProperty: React.FC = () => {
         bathrooms: 0,
         area: 0
     });
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+
+
+    useEffect(() => {
+        console.log(`isAuthenticated: ${isAuthenticated} | userId: ${userId}`);
+        if (isAuthenticated && userId) {
+            dispatch(getPropertiesByUserId(userId));
+        }
+    }, [dispatch, isAuthenticated, userId]);
 
     if (!isAuthenticated) {
         navigate('/login');
@@ -51,64 +55,38 @@ export const AddProperty: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-
         try {
-            if (editingProperty) {
-                const updatedProperty: Residency = {
-                    _id: editingProperty._id,
-                    title: formData.title,
-                    description: formData.description,
-                    location: formData.address + ', ' + formData.city + ', ' + formData.country,
-                    price: parseInt(formData.price),
-                    owner: "6794ebefd1f7918bbc628fcf",
-                    isAvailable: true,
-                    facilities: [{
-                        bedrooms: formData.bedrooms,
-                        bathrooms: formData.bathrooms,
-                        area: formData.area
-                    }],
-                    images: [
-                        formData.image,
-                        formData.image2,
-                        formData.image3
-                    ],
-                    bookings: [],
-                    inquiries: []
-                };
-
-                await dispatch(updatePropertyDetails(updatedProperty));
-                setEditingProperty(null);
-
-            } else {
-                const newProperty: Residency = {
-                    _id: " ",
-                    title: formData.title,
-                    description: formData.description,
-                    location: formData.address + ', ' + formData.city + ', ' + formData.country,
-                    price: parseInt(formData.price),
-                    owner: "6794ebefd1f7918bbc628fcf",
-                    isAvailable: true,
-                    facilities: [{
-                        bedrooms: formData.bedrooms,
-                        bathrooms: formData.bathrooms,
-                        area: formData.area
-                    }],
-                    images: [
-                        formData.image,
-                        formData.image2,
-                        formData.image3
-                    ],
-                    bookings: [],
-                    inquiries: []
-                };
-
-                await dispatch(createProperty(newProperty));
+            if (!userId) {
+                console.error("User ID not found in cookies.");
+                return;
             }
-            // navigate('/properties');
-        } catch (err) {
-            console.error('Error adding property:', err);
-        }
 
+            let propertyData: Residency = {
+                _id: editingProperty ? editingProperty._id : "",
+                title: formData.title,
+                description: formData.description,
+                location: `${formData.address}`,
+                price: parseInt(formData.price),
+                owner: userId, // Use userId from cookies
+                isAvailable: true,
+                facilities: [{ bedrooms: formData.bedrooms, bathrooms: formData.bathrooms, area: formData.area }],
+                images: [formData.image, formData.image2, formData.image3],
+                bookings: [],
+                inquiries: []
+            };
+
+            if (editingProperty) {
+                await dispatch(updatePropertyDetails(propertyData)).unwrap(); // Ensures action is completed
+                setEditingProperty(null);
+            } else {
+                await dispatch(createProperty(propertyData)).unwrap();
+            }
+
+            // ✅ Auto-update UI without refresh
+            dispatch(getPropertiesByUserId(userId));
+        } catch (err) {
+            console.error("Error saving property:", err);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -116,16 +94,15 @@ export const AddProperty: React.FC = () => {
         setFormData(prev => ({...prev, [name]: value}));
     };
 
-    // const handleRemoveProperty = (id: string) => {
-    //   dispatch(removeProperty(id));
-    // };
+
     const handleDelete = (id: string) => {
         setShowDeleteConfirm(id);
     };
 
     const confirmDelete = async (id: string) => {
         try{
-            dispatch(await removeProperty(id));
+            await dispatch(removeProperty(id)).unwrap();
+            dispatch(getPropertiesByUserId(userId)); // Refresh list
             setShowDeleteConfirm(null);
         }catch (err){
             console.error('Error deleting property:', err);
@@ -142,9 +119,9 @@ export const AddProperty: React.FC = () => {
             address: property.location,
             city: property.location,
             country: property.location,
-            image: property.images[0],
-            image2: property.images[1],
-            image3: property.images[2],
+            image: property.images?.[0] || '',
+            image2: property.images?.[1] || '',
+            image3: property.images?.[2] || '',
             bedrooms: property.facilities[0].bedrooms,
             bathrooms: property.facilities[0].bathrooms,
             area: property.facilities[0].area

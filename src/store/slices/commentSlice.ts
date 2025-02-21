@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Comment} from '../../types';
-import {getCommentsFromResidencyId} from "../../api/commentApi.ts";
+import {getCommentsFromResidencyId, addComment as addCommentApi} from "../../api/commentApi.ts";
 
 interface CommentState {
     comments: Comment[];
@@ -20,15 +20,24 @@ export const getCommentsForResidency = createAsyncThunk(
         const response = await getCommentsFromResidencyId(residencyId);
         return response.data;
     }
-)
+);
+
+export const addComment = createAsyncThunk(
+    'comments/add',
+    async (comment: Comment, { rejectWithValue }) => {
+        try {
+            const response = await addCommentApi(comment);
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.message);
+        }
+    }
+);
 
 const commentSlice = createSlice({
     name: 'comment',
     initialState,
     reducers: {
-        addComment: (state, action: PayloadAction<Comment>) => {
-            state.comments.push(action.payload);
-        },
         upvoteComment: (state, action: PayloadAction<string>) => {
             const comment = state.comments.find(c => c.id === action.payload);
             if (comment) {
@@ -55,9 +64,21 @@ const commentSlice = createSlice({
             .addCase(getCommentsForResidency.rejected,(state,action)=>{
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(addComment.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(addComment.fulfilled, (state, action) => {
+                state.loading = false;
+                state.comments.push(action.payload);
+            })
+            .addCase(addComment.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
             });
     }
 });
 
-export const {addComment, upvoteComment, downvoteComment} = commentSlice.actions;
+export const {upvoteComment, downvoteComment} = commentSlice.actions;
 export default commentSlice.reducer;

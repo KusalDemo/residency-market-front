@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {Home, LogIn, LogOut, Menu, X, Heart, Calendar, MessageCircle} from 'lucide-react';
 import { RootState } from '../store';
 import { logout } from '../store/slices/authSlice';
+import Cookies from "js-cookie";
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -12,6 +13,12 @@ export const Header: React.FC = () => {
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
 
   const handleLogout = () => {
+
+   /* Cookies.remove('accessToken');
+    Cookies.remove('refreshToken');
+    Cookies.remove('user_id');
+    Cookies.remove('user_email');
+*/
     dispatch(logout());
     navigate('/');
     setIsMenuOpen(false);

@@ -28,11 +28,6 @@ export const loginUser = createAsyncThunk(
       try {
         const response = await loginUserApi(credentials);
         const { user, accessToken, refreshToken } = response;
-
-        // Store tokens in cookies
-        Cookies.set('accessToken', accessToken, { expires: 1, secure: true, sameSite: 'Strict' });
-        Cookies.set('refreshToken', refreshToken, { expires: 7, secure: true, sameSite: 'Strict' });
-
         return { user, accessToken, refreshToken };
       } catch (error) {
           return rejectWithValue(error.response?.data || `Login failed : Response : ${error}`);
@@ -52,8 +47,11 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
 
-      Cookies.remove('accessToken');
-      Cookies.remove('refreshToken');
+      // Remove user data from cookies
+      Cookies.remove('user_id');
+      Cookies.remove('user_email');
+      Cookies.remove('access_token');
+      Cookies.remove('refresh_token');
     },
   },
   extraReducers: (builder) => {

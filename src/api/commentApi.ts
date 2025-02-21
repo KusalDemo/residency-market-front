@@ -13,3 +13,12 @@ export const getCommentsFromResidencyId = async(id : string)=>{
         throw new Error(error.message);
     }
 }
+
+export const addComment = async (comment: Comment) => {
+    try {
+        const axiosResponse = await axios.post(`${BASE_URL}/comment/create`, comment);
+        return axiosResponse.data;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}

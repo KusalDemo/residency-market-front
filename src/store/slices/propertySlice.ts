@@ -52,6 +52,14 @@ export const createProperty = createAsyncThunk(
     }
 );
 
+export const updatePropertyDetails = createAsyncThunk(
+    'residency/update',
+    async (property: Residency) => {
+        let updatedResidency = await updateProperty(property._id,property);
+        return updatedResidency;
+    }
+)
+
 export const getPropertiesByUserId = createAsyncThunk(
     'residency/user',
     async (userId: string) => {
@@ -60,13 +68,7 @@ export const getPropertiesByUserId = createAsyncThunk(
     }
 )
 
-export const updatePropertyDetails = createAsyncThunk(
-    'residency/update',
-    async (property: Residency) => {
-        let updatedResidency = await updateProperty(property._id,property);
-        return updatedResidency;
-    }
-)
+
 
 export const removeProperty = createAsyncThunk(
     'residency/delete',
