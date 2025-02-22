@@ -59,8 +59,8 @@ export const PropertyDetail: React.FC = () => {
 
         const inquiry: Inquiry = {
             id: "",
-            residencyId: property._id,
-            userId: Cookies.get("user_id") || '6794ebefd1f7918bbc628fcf',
+            residency: property._id,
+            user: Cookies.get("user_id") || '6794ebefd1f7918bbc628fcf',
             message: inquiryMessage,
             date: new Date().toISOString(),
         };

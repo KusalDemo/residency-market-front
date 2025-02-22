@@ -1,6 +1,13 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Inquiry} from '../../types';
-import {addInquiry, getAllInquiriesByUserId, getInquiriesByResidencyId, addReplyToInquiry} from "../../api/inquiryApi.ts";
+import {
+    addInquiry,
+    getAllInquiriesByUserId,
+    getInquiriesByResidencyId,
+    addReplyToInquiry,
+    updateInquiry as updateInquiryApi,
+    deleteInquiry as deleteInquiryApi
+} from "../../api/inquiryApi.ts";
 
 interface InquiryState {
     inquiries: Inquiry[];
@@ -47,10 +54,29 @@ export const addReply = createAsyncThunk(
     }
 );
 
+export const updateInquiry = createAsyncThunk(
+    'inquiry/update',
+    async ({inquiryId, inquiry}: { inquiryId: string, inquiry: Inquiry }) => {
+        const response = await updateInquiryApi(inquiryId, inquiry);
+        return response;
+    }
+);
+
+export const deleteInquiry = createAsyncThunk(
+    'inquiry/delete',
+    async (inquiryId: string) => {
+        await deleteInquiryApi(inquiryId);
+        return inquiryId;
+    }
+);
+
 const inquirySlice = createSlice({
     name: 'inquiry',
     initialState,
     reducers: {
+        addInquiry: (state, action: PayloadAction<Inquiry>) => {
+            state.inquiries.push(action.payload);
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -90,13 +116,22 @@ const inquirySlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
             })
-/*            .addCase(addReply.fulfilled, (state, action) => {
+            /*.addCase(addReply.fulfilled, (state, action) => {
                 const inquiry = state.inquiries.find(i => i._id === action.payload.inquiryId);
                 if (inquiry) {
                     inquiry.replies = inquiry.replies || [];
                     inquiry.replies.push(action.payload.reply);
                 }
-            });*/
+            })*/
+            .addCase(updateInquiry.fulfilled, (state, action) => {
+                const index = state.inquiries.findIndex(i => i._id === action.payload._id);
+                if (index !== -1) {
+                    state.inquiries[index] = action.payload;
+                }
+            })
+            .addCase(deleteInquiry.fulfilled, (state, action) => {
+                state.inquiries = state.inquiries.filter(i => i._id !== action.payload);
+            });
     }
 });
 

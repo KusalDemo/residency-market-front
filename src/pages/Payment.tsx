@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { payBooking} from '../store/slices/bookingSlice';
+import { payBooking } from '../store/slices/bookingSlice';
 import { CreditCard, Calendar } from 'lucide-react';
 import Loading from "../components/Loading.tsx";
+import { Booking } from "../types";
+import Cookies from "js-cookie";
 
 export const Payment: React.FC = () => {
     const navigate = useNavigate();
@@ -12,23 +14,26 @@ export const Payment: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { properties } = useSelector((state: RootState) => state.property);
     const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
-    const {  error , loading} = useSelector((state: RootState) => state.booking);
+    const { error, loading } = useSelector((state: RootState) => state.booking);
     const property = properties.find(p => p._id === id);
 
     const [paymentDetails, setPaymentDetails] = useState({
         cardNumber: '',
         expiryDate: '',
         cvv: '',
-        name: ''
+        name: '',
+        startDate: '',
+        endDate: ''
     });
 
     if (loading) {
         return (
-            <div className="text-center py-10 flex flex-col items-center" >
+            <div className="text-center py-10 flex flex-col items-center">
                 <Loading /> Payment Processing...
             </div>
-        )
+        );
     }
+
     if (error) return <p className="flex justify-center mt-10">Error: {error}</p>;
 
     if (!isAuthenticated) {
@@ -42,19 +47,31 @@ export const Payment: React.FC = () => {
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
 
-        // In a real app, this would process payment through Stripe
+        // Validate dates
+        const startDate = new Date(paymentDetails.startDate);
+        const endDate = new Date(paymentDetails.endDate);
 
-        const booking1 = {
-            email: user?.email || '',
-            date: new Date().toISOString(),
-            propertyId: property._id
+        if (startDate >= endDate) {
+            alert('End date must be after start date.');
+            return;
         }
 
-        console.log(`Details 00 : ${booking1.email} | ${booking1.date} | ${booking1.propertyId}`)
-        await dispatch(payBooking(booking1));
+        // Create booking object
+        const booking: Booking = {
+            residency: property._id,
+            user: user.id || Cookies.get('user_id'),
+            startDate: startDate,
+            endDate: endDate,
+            total: property.price,
+            status: 'pending'
+        };
 
+        // Dispatch the booking action
+        await dispatch(payBooking(booking));
+
+        // Navigate to bookings page
         navigate('/bookings');
     };
 
@@ -119,6 +136,35 @@ export const Payment: React.FC = () => {
                                     required
                                 />
                                 <CreditCard className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Start Date
+                                </label>
+                                <input
+                                    type="date"
+                                    name="startDate"
+                                    value={paymentDetails.startDate}
+                                    onChange={handleChange}
+                                    className="w-full p-3 border border-gray-300 rounded-md"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    End Date
+                                </label>
+                                <input
+                                    type="date"
+                                    name="endDate"
+                                    value={paymentDetails.endDate}
+                                    onChange={handleChange}
+                                    className="w-full p-3 border border-gray-300 rounded-md"
+                                    required
+                                />
                             </div>
                         </div>
 

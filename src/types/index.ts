@@ -67,3 +67,12 @@ export interface Comment {
   upVotes: number;
   downVotes: number;
 }
+
+export interface Booking {
+  residency: string;
+  user: string;
+  startDate: Date;
+  endDate: Date;
+  total: number;
+  status: string;
+}
