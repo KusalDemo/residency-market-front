@@ -138,7 +138,7 @@ export const AddProperty: React.FC = () => {
 
     return (
         <div className="container mx-auto px-6 py-12">
-            <ToastContainer/>
+            <ToastContainer />
             <div className="mb-12">
                 <h2 className="text-2xl font-bold mb-6">Your Properties</h2>
                 {userProperties.length === 0 ? (
@@ -147,7 +147,7 @@ export const AddProperty: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {userProperties.map((property) => (
                             <div key={property._id} className="relative">
-                                <PropertyCard property={property}/>
+                                <PropertyCard property={property} />
                                 <div className="absolute top-4 left-4 space-x-2">
                                     <button
                                         onClick={() => handleEdit(property._id, property)}
@@ -200,7 +200,9 @@ export const AddProperty: React.FC = () => {
             <form onSubmit={handleSubmit} className="max-w-2xl bg-white rounded-lg shadow-md p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Title
+                        </label>
                         <input
                             type="text"
                             name="title"
@@ -212,7 +214,9 @@ export const AddProperty: React.FC = () => {
                     </div>
 
                     <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Description
+                        </label>
                         <textarea
                             name="description"
                             value={formData.description}
@@ -224,20 +228,23 @@ export const AddProperty: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Price</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Price
+                        </label>
                         <input
                             type="number"
                             name="price"
                             value={formData.price}
                             onChange={handleChange}
-                            min="1"
                             className="w-full p-3 border border-gray-300 rounded-md"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Address
+                        </label>
                         <input
                             type="text"
                             name="address"
@@ -249,7 +256,9 @@ export const AddProperty: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            City
+                        </label>
                         <input
                             type="text"
                             name="city"
@@ -261,7 +270,9 @@ export const AddProperty: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Country
+                        </label>
                         <input
                             type="text"
                             name="country"
@@ -273,46 +284,51 @@ export const AddProperty: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Bedrooms</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Bedrooms
+                        </label>
                         <input
                             type="number"
                             name="bedrooms"
                             value={formData.bedrooms}
                             onChange={handleChange}
-                            min="1"
                             className="w-full p-3 border border-gray-300 rounded-md"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Bathrooms</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Bathrooms
+                        </label>
                         <input
                             type="number"
                             name="bathrooms"
                             value={formData.bathrooms}
                             onChange={handleChange}
-                            min="1"
                             className="w-full p-3 border border-gray-300 rounded-md"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Area (sqft)</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Area (sqft)
+                        </label>
                         <input
                             type="number"
                             name="area"
                             value={formData.area}
                             onChange={handleChange}
-                            min="1"
                             className="w-full p-3 border border-gray-300 rounded-md"
                             required
                         />
                     </div>
 
                     <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Image URL
+                        </label>
                         <input
                             type="url"
                             name="image"
@@ -323,7 +339,9 @@ export const AddProperty: React.FC = () => {
                         />
                     </div>
                     <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Image URL 2</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Image URL 2
+                        </label>
                         <input
                             type="url"
                             name="image2"
@@ -334,7 +352,9 @@ export const AddProperty: React.FC = () => {
                         />
                     </div>
                     <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Image URL 3</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Image URL 3
+                        </label>
                         <input
                             type="url"
                             name="image3"
@@ -367,9 +387,9 @@ export const AddProperty: React.FC = () => {
                                         image: '',
                                         image2: '',
                                         image3: '',
-                                        bedrooms: 1,
-                                        bathrooms: 1,
-                                        area: 1
+                                        bedrooms: 0,
+                                        bathrooms: 0,
+                                        area: 0
                                     });
                                 }}
                                 className="w-full mt-4 bg-gray-200 text-gray-800 py-3 rounded-md hover:bg-gray-300 transition-colors"
@@ -380,7 +400,6 @@ export const AddProperty: React.FC = () => {
                     </div>
                 </div>
             </form>
-
         </div>
     );
 };

@@ -9,7 +9,7 @@ const TourismNews: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const fetchNews = async () => {
-        const url = `https://newsapi.org/v2/everything?q=hotels&from=2025-01-01&sortBy=publishedAt&language=en&apiKey=${process.env.NEWS_API_KEY}`;
+        const url = `https://newsapi.org/v2/everything?q=hotels&from=2025-02-21&sortBy=publishedAt&language=en&apiKey=${process.env.NEWS_API_KEY}`;
 
         try {
             const response = await fetch(url);

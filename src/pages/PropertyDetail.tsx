@@ -33,6 +33,9 @@ export const PropertyDetail: React.FC = () => {
     const [commentMessage, setCommentMessage] = useState('');
     const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
     const [editedCommentMessage, setEditedCommentMessage] = useState('');
+    const [visibleComments, setVisibleComments] = useState(5); // Default show 5
+
+
 
     useEffect(() => {
         if (id) {
@@ -183,14 +186,27 @@ export const PropertyDetail: React.FC = () => {
                     </div>
                     <div className="space-y-6 mt-5">
                         <h2 className="text-2xl font-semibold mb-4">Comments</h2>
-                        {comments.map((comment) => (
+                        <form onSubmit={handleAddComment} className="bg-white p-6 rounded-lg shadow-md">
+                            <h2 className="text-xl font-semibold mb-4 text-blue-600">Add a Comment</h2>
+                            <textarea
+                                value={commentMessage}
+                                onChange={(e) => setCommentMessage(e.target.value)}
+                                className="w-full p-3 border border-gray-300 rounded-md mb-4"
+                                rows={4}
+                                placeholder="Write your comment here..."
+                                required
+                            />
+                            <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+                                Submit Comment
+                            </button>
+                        </form>
+
+                        {comments.slice(0, visibleComments).map((comment) => (
                             <div key={comment._id} className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex justify-between items-start mb-4">
                                     <div>
                                         <p className="font-medium text-blue-600">{comment.user}</p>
-                                        <p className="text-sm text-gray-500">
-                                            {new Date(comment.createdAt).toLocaleDateString()}
-                                        </p>
+                                        <p className="text-sm text-gray-500">{new Date(comment.createdAt).toLocaleDateString()}</p>
                                     </div>
                                     <div className="flex items-center space-x-4">
                                         {comment.user === Cookies.get('user_id') && (
@@ -203,13 +219,13 @@ export const PropertyDetail: React.FC = () => {
                                                     }}
                                                     className="text-gray-600 hover:text-blue-600"
                                                 >
-                                                    <Edit className="h-4 w-4"/>
+                                                    <Edit className="h-4 w-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteComment(comment._id)}
                                                     className="text-gray-600 hover:text-red-600"
                                                 >
-                                                    <Trash className="h-4 w-4"/>
+                                                    <Trash className="h-4 w-4" />
                                                 </button>
                                             </>
                                         )}
@@ -217,28 +233,28 @@ export const PropertyDetail: React.FC = () => {
                                             onClick={() => handleVote(comment._id, 'up')}
                                             className="flex items-center space-x-1 text-gray-600 hover:text-blue-600"
                                         >
-                                            <ThumbsUp className="h-4 w-4"/>
+                                            <ThumbsUp className="h-4 w-4" />
                                             <span>{comment.upVotes}</span>
                                         </button>
                                         <button
                                             onClick={() => handleVote(comment._id, 'down')}
                                             className="flex items-center space-x-1 text-gray-600 hover:text-red-600"
                                         >
-                                            <ThumbsDown className="h-4 w-4"/>
+                                            <ThumbsDown className="h-4 w-4" />
                                             <span>{comment.downVotes}</span>
                                         </button>
                                     </div>
                                 </div>
                                 {editingCommentId === comment._id ? (
                                     <div className="mt-4">
-                                        <textarea
-                                            value={editedCommentMessage}
-                                            onChange={(e) => setEditedCommentMessage(e.target.value)}
-                                            className="w-full p-3 border border-gray-300 rounded-md mb-4"
-                                            rows={4}
-                                            placeholder="Edit your comment..."
-                                            required
-                                        />
+              <textarea
+                  value={editedCommentMessage}
+                  onChange={(e) => setEditedCommentMessage(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-md mb-4"
+                  rows={4}
+                  placeholder="Edit your comment..."
+                  required
+              />
                                         <button
                                             onClick={() => handleUpdateComment(comment._id)}
                                             className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
@@ -251,23 +267,16 @@ export const PropertyDetail: React.FC = () => {
                                 )}
                             </div>
                         ))}
-                        <form onSubmit={handleAddComment} className="bg-white p-6 rounded-lg shadow-md">
-                            <h2 className="text-xl font-semibold mb-4">Add a Comment</h2>
-                            <textarea
-                                value={commentMessage}
-                                onChange={(e) => setCommentMessage(e.target.value)}
-                                className="w-full p-3 border border-gray-300 rounded-md mb-4"
-                                rows={4}
-                                placeholder="Write your comment here..."
-                                required
-                            />
+
+                        {/* Show "View More" button only if there are more comments */}
+                        {visibleComments < comments.length && (
                             <button
-                                type="submit"
-                                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+                                onClick={() => setVisibleComments((prev) => prev + 5)}
+                                className="w-full mt-4 bg-gray-200 text-gray-700 py-2 rounded-md hover:bg-gray-300"
                             >
-                                Submit Comment
+                                View More Comments
                             </button>
-                        </form>
+                        )}
                     </div>
                 </div>
 

@@ -35,7 +35,7 @@ export const Header: React.FC = () => {
 
             <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden"
+                className="lg:hidden"
             >
               {isMenuOpen ? (
                   <X className="h-6 w-6 text-gray-600" />
@@ -44,7 +44,7 @@ export const Header: React.FC = () => {
               )}
             </button>
 
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden lg:flex items-center space-x-8">
               <Link to="/" className="text-gray-600 hover:text-blue-600">Home</Link>
               <Link to="/properties" className="text-gray-600 hover:text-blue-600">Properties</Link>
               <Link to="/news" className="text-gray-600 hover:text-blue-600">News</Link>
