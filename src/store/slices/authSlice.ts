@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '../../types';
-import { loginUserApi } from '../../api/userApi';
+import { loginUserApi, registerUserApi } from '../../api/userApi'; // Import registerUserApi
 import Cookies from 'js-cookie';
 
 interface AuthState {
@@ -30,7 +30,20 @@ export const loginUser = createAsyncThunk(
         const { user, accessToken, refreshToken } = response;
         return { user, accessToken, refreshToken };
       } catch (error) {
-          return rejectWithValue(error.response?.data || `Login failed : Response : ${error}`);
+        return rejectWithValue(error.response?.data || `Login failed: ${error}`);
+      }
+    }
+);
+
+// Async thunk for registration
+export const registerUser = createAsyncThunk(
+    'auth/register',
+    async (userData: { name: string; email: string; password: string }, { rejectWithValue }) => {
+      try {
+        const response = await registerUserApi(userData);
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.response?.data || `Registration failed: ${error}`);
       }
     }
 );
@@ -70,57 +83,20 @@ const authSlice = createSlice({
         .addCase(loginUser.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload as string;
+        })
+        .addCase(registerUser.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(registerUser.fulfilled, (state) => {
+          state.loading = false;
+        })
+        .addCase(registerUser.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload as string;
         });
   },
 });
 
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;
-
-
-/*
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../../types';
-
-interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  favorites: string[];
-}
-
-const initialState: AuthState = {
-  user: null,
-  isAuthenticated: false,
-  favorites: [],
-};
-
-const authSlice = createSlice({
-  name: 'auth',
-  initialState,
-  reducers: {
-    login: (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
-      state.isAuthenticated = true;
-      state.favorites = action.payload.favResidenciesID || [];
-    },
-    logout: (state) => {
-      state.user = null;
-      state.isAuthenticated = false;
-      state.favorites = [];
-    },
-    toggleFavorite: (state, action: PayloadAction<string>) => {
-      const residencyId = action.payload;
-      if (state.favorites.includes(residencyId)) {
-        state.favorites = state.favorites.filter(id => id !== residencyId);
-      } else {
-        state.favorites.push(residencyId);
-      }
-      if (state.user) {
-        state.user.favResidenciesID = state.favorites;
-      }
-    }
-  },
-});
-
-export const { login, logout, toggleFavorite } = authSlice.actions;
-export default authSlice.reducer;*/
