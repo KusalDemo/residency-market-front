@@ -4,6 +4,9 @@ import {Send, Edit, Trash} from "lucide-react";
 import {useDispatch} from "react-redux";
 import {addReply, updateInquiry, deleteInquiry} from "../store/slices/inquirySlice";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export const InquiryCard: React.FC<{ inquiry: Inquiry; isReceived?: boolean }> = ({inquiry, isReceived = false}) => {
     const dispatch = useDispatch();
     const [replyMessage, setReplyMessage] = useState('');
@@ -28,7 +31,12 @@ export const InquiryCard: React.FC<{ inquiry: Inquiry; isReceived?: boolean }> =
             ...inquiry,
             message: editedMessage
         };
-        dispatch(updateInquiry({inquiryId: inquiry._id, inquiry: updatedInquiry}));
+        try{
+            dispatch(updateInquiry({inquiryId: inquiry._id, inquiry: updatedInquiry}));
+            toast.success("Inquiry updated successfully!");
+        }catch (error) {
+            toast.error("Inquiry update failed. Please try again.");
+        }
         setIsEditing(false);
     };
 

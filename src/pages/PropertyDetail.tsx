@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {useParams, useNavigate} from 'react-router-dom';
-import {useSelector, useDispatch} from 'react-redux';
-import {Bed, Bath, Square, MapPin, Phone, Mail, MessageCircle, ThumbsUp, ThumbsDown, Edit, Trash} from 'lucide-react';
-import {RootState} from '../store';
-import {addInquiry, createInquiry} from '../store/slices/inquirySlice';
-import {Inquiry} from "../types";
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Bed, Bath, Square, MapPin, Phone, Mail, MessageCircle, ThumbsUp, ThumbsDown, Edit, Trash } from 'lucide-react';
+import { RootState } from '../store';
+import { addInquiry, createInquiry } from '../store/slices/inquirySlice';
+import { Inquiry } from "../types";
 import {
     downvoteComment,
     getCommentsForResidency,
@@ -14,15 +14,17 @@ import {
     deleteComment
 } from "../store/slices/commentSlice.ts";
 import Cookies from "js-cookie";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const PropertyDetail: React.FC = () => {
-    const {id} = useParams<{ id: string }>();
-    const {properties} = useSelector((state: RootState) => state.property);
-    const {user} = useSelector((state: RootState) => state.auth);
-    const {comments, error, loading} = useSelector((state: RootState) => state.comments);
+    const { id } = useParams<{ id: string }>();
+    const { properties } = useSelector((state: RootState) => state.property);
+    const { user } = useSelector((state: RootState) => state.auth);
+    const { comments, error, loading } = useSelector((state: RootState) => state.comments);
     const property = properties.find(p => p._id === id);
 
-    const {isAuthenticated} = useSelector((state: RootState) => state.auth);
+    const { isAuthenticated } = useSelector((state: RootState) => state.auth);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -65,10 +67,14 @@ export const PropertyDetail: React.FC = () => {
             date: new Date().toISOString(),
         };
 
-        await dispatch(createInquiry(inquiry));
-        setInquiryMessage('');
-        setShowInquiryForm(false);
-        alert('Inquiry sent successfully!');
+        try {
+            await dispatch(createInquiry(inquiry));
+            setInquiryMessage('');
+            setShowInquiryForm(false);
+            toast.success('Inquiry sent successfully!');
+        } catch (error) {
+            toast.error('Failed to send inquiry. Please try again.');
+        }
     };
 
     const handleVote = async (commentId: string, voteType: 'up' | 'down') => {
@@ -77,11 +83,16 @@ export const PropertyDetail: React.FC = () => {
             return;
         }
 
-        console.log(`commentId: ${commentId}`); // Debugging: Check the commentId
-        if (voteType === 'up') {
-            await dispatch(upvoteComment(commentId));
-        } else {
-            await dispatch(downvoteComment(commentId));
+        try {
+            if (voteType === 'up') {
+                await dispatch(upvoteComment(commentId));
+                toast.success('Upvoted successfully!');
+            } else {
+                await dispatch(downvoteComment(commentId));
+                toast.success('Downvoted successfully!');
+            }
+        } catch (error) {
+            toast.error('Failed to vote. Please try again.');
         }
     };
 
@@ -102,9 +113,13 @@ export const PropertyDetail: React.FC = () => {
             createdAt: new Date().toISOString(),
         };
 
-        await dispatch(addComment(newComment));
-        setCommentMessage('');
-        alert('Comment added successfully!');
+        try {
+            await dispatch(addComment(newComment));
+            setCommentMessage('');
+            toast.success('Comment added successfully!');
+        } catch (error) {
+            toast.error('Failed to add comment. Please try again.');
+        }
     };
 
     const handleUpdateComment = async (commentId: string) => {
@@ -123,10 +138,14 @@ export const PropertyDetail: React.FC = () => {
             createdAt: new Date().toISOString(),
         };
 
-        await dispatch(updateComment({commentId, comment: updatedComment}));
-        setEditingCommentId(null);
-        setEditedCommentMessage('');
-        alert('Comment updated successfully!');
+        try {
+            await dispatch(updateComment({ commentId, comment: updatedComment }));
+            setEditingCommentId(null);
+            setEditedCommentMessage('');
+            toast.success('Comment updated successfully!');
+        } catch (error) {
+            toast.error('Failed to update comment. Please try again.');
+        }
     };
 
     const handleDeleteComment = async (commentId: string) => {
@@ -135,12 +154,17 @@ export const PropertyDetail: React.FC = () => {
             return;
         }
 
-        await dispatch(deleteComment(commentId));
-        alert('Comment deleted successfully!');
+        try {
+            await dispatch(deleteComment(commentId));
+            toast.success('Comment deleted successfully!');
+        } catch (error) {
+            toast.error('Failed to delete comment. Please try again.');
+        }
     };
 
     return (
         <div className="container mx-auto px-6 py-12">
+            <ToastContainer />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <div>
                     <div className="relative h-[400px] mb-8">
@@ -171,6 +195,7 @@ export const PropertyDetail: React.FC = () => {
                                     <div className="flex items-center space-x-4">
                                         {comment.user === Cookies.get('user_id') && (
                                             <>
+                                                <span className="text-sm text-gray-500">you</span>
                                                 <button
                                                     onClick={() => {
                                                         setEditingCommentId(comment._id);

@@ -17,7 +17,7 @@ export const Login: React.FC = () => {
     await dispatch(loginUser({ email, password }));
   };
 
-  // Redirect user to dashboard or home if logged in
+
   if (isAuthenticated) {
     navigate('/');
   }

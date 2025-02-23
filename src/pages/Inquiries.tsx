@@ -8,6 +8,8 @@ import Loading from "../components/Loading.tsx";
 import {InquiryCard} from "../components/InquiryCard.tsx";
 import Cookies from "js-cookie";
 
+
+
 export const Inquiries: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();

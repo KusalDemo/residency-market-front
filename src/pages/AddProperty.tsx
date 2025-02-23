@@ -1,17 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     createProperty,
     getPropertiesByUserId,
     removeProperty,
     updatePropertyDetails
 } from '../store/slices/propertySlice';
-import {RootState} from '../store';
-import {Residency} from '../types';
-import {PropertyCard} from '../components/PropertyCard';
+import { RootState } from '../store';
+import { Residency } from '../types';
+import { PropertyCard } from '../components/PropertyCard';
 import Cookies from "js-cookie";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const AddProperty: React.FC = () => {
     const navigate = useNavigate();
@@ -38,7 +39,6 @@ export const AddProperty: React.FC = () => {
     });
     const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
 
-
     useEffect(() => {
         console.log(`isAuthenticated: ${isAuthenticated} | userId: ${userId}`);
         if (isAuthenticated && userId) {
@@ -51,13 +51,17 @@ export const AddProperty: React.FC = () => {
         return null;
     }
 
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
             if (!userId) {
-                console.error("User ID not found in cookies.");
+                toast.error('User not found. Please log in.');
+                return;
+            }
+
+            if (!formData.title || !formData.description || !formData.price || !formData.address || !formData.city || !formData.country || !formData.image) {
+                toast.error('Please fill in all required fields.');
                 return;
             }
 
@@ -77,34 +81,38 @@ export const AddProperty: React.FC = () => {
 
             if (editingProperty) {
                 await dispatch(updatePropertyDetails(propertyData)).unwrap(); // Ensures action is completed
+                toast.success('Property updated successfully!');
                 setEditingProperty(null);
             } else {
                 await dispatch(createProperty(propertyData)).unwrap();
+                toast.success('Property created successfully!');
             }
 
             // ✅ Auto-update UI without refresh
             dispatch(getPropertiesByUserId(userId));
         } catch (err) {
+            toast.error('Failed to save property. Please try again.');
             console.error("Error saving property:", err);
         }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const {name, value} = e.target;
-        setFormData(prev => ({...prev, [name]: value}));
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
-
 
     const handleDelete = (id: string) => {
         setShowDeleteConfirm(id);
     };
 
     const confirmDelete = async (id: string) => {
-        try{
+        try {
             await dispatch(removeProperty(id)).unwrap();
             dispatch(getPropertiesByUserId(userId)); // Refresh list
             setShowDeleteConfirm(null);
-        }catch (err){
+            toast.success('Property deleted successfully!');
+        } catch (err) {
+            toast.error('Failed to delete property. Please try again.');
             console.error('Error deleting property:', err);
         }
     };
@@ -126,11 +134,11 @@ export const AddProperty: React.FC = () => {
             bathrooms: property.facilities[0].bathrooms,
             area: property.facilities[0].area
         });
-
     };
 
     return (
         <div className="container mx-auto px-6 py-12">
+            <ToastContainer/>
             <div className="mb-12">
                 <h2 className="text-2xl font-bold mb-6">Your Properties</h2>
                 {userProperties.length === 0 ? (
@@ -192,9 +200,7 @@ export const AddProperty: React.FC = () => {
             <form onSubmit={handleSubmit} className="max-w-2xl bg-white rounded-lg shadow-md p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Title
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
                         <input
                             type="text"
                             name="title"
@@ -206,9 +212,7 @@ export const AddProperty: React.FC = () => {
                     </div>
 
                     <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Description
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                         <textarea
                             name="description"
                             value={formData.description}
@@ -220,23 +224,20 @@ export const AddProperty: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Price
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Price</label>
                         <input
                             type="number"
                             name="price"
                             value={formData.price}
                             onChange={handleChange}
+                            min="1"
                             className="w-full p-3 border border-gray-300 rounded-md"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Address
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
                         <input
                             type="text"
                             name="address"
@@ -248,9 +249,7 @@ export const AddProperty: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            City
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
                         <input
                             type="text"
                             name="city"
@@ -262,9 +261,7 @@ export const AddProperty: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Country
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
                         <input
                             type="text"
                             name="country"
@@ -276,51 +273,46 @@ export const AddProperty: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Bedrooms
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Bedrooms</label>
                         <input
                             type="number"
                             name="bedrooms"
                             value={formData.bedrooms}
                             onChange={handleChange}
+                            min="1"
                             className="w-full p-3 border border-gray-300 rounded-md"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Bathrooms
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Bathrooms</label>
                         <input
                             type="number"
                             name="bathrooms"
                             value={formData.bathrooms}
                             onChange={handleChange}
+                            min="1"
                             className="w-full p-3 border border-gray-300 rounded-md"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Area (sqft)
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Area (sqft)</label>
                         <input
                             type="number"
                             name="area"
                             value={formData.area}
                             onChange={handleChange}
+                            min="1"
                             className="w-full p-3 border border-gray-300 rounded-md"
                             required
                         />
                     </div>
 
                     <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Image URL
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
                         <input
                             type="url"
                             name="image"
@@ -331,9 +323,7 @@ export const AddProperty: React.FC = () => {
                         />
                     </div>
                     <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Image URL 2
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Image URL 2</label>
                         <input
                             type="url"
                             name="image2"
@@ -344,9 +334,7 @@ export const AddProperty: React.FC = () => {
                         />
                     </div>
                     <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Image URL 3
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Image URL 3</label>
                         <input
                             type="url"
                             name="image3"
@@ -379,9 +367,9 @@ export const AddProperty: React.FC = () => {
                                         image: '',
                                         image2: '',
                                         image3: '',
-                                        bedrooms: 0,
-                                        bathrooms: 0,
-                                        area: 0
+                                        bedrooms: 1,
+                                        bathrooms: 1,
+                                        area: 1
                                     });
                                 }}
                                 className="w-full mt-4 bg-gray-200 text-gray-800 py-3 rounded-md hover:bg-gray-300 transition-colors"
@@ -392,6 +380,7 @@ export const AddProperty: React.FC = () => {
                     </div>
                 </div>
             </form>
+
         </div>
     );
 };

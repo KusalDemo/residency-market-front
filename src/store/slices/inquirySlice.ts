@@ -25,24 +25,37 @@ const initialState: InquiryState = {
 
 export const createInquiry = createAsyncThunk(
     'inquiry/create',
-    async (inquiry: Inquiry) => {
-        return await addInquiry(inquiry);
+    async (inquiry: Inquiry, {rejectWithValue}) => {
+        try{
+            return await addInquiry(inquiry);
+        }catch (error) {
+            return rejectWithValue(error);
+        }
+
     }
 );
 
 export const getUserRelatedInquiries = createAsyncThunk(
     'inquiry/getUserInquiries',
-    async (userId: string) => {
-        const allInquiries = await getAllInquiriesByUserId(userId);
-        return allInquiries;
+    async (userId: string, {rejectWithValue}) => {
+        try{
+            const allInquiries = await getAllInquiriesByUserId(userId);
+            return allInquiries;
+        }catch (error) {
+            return rejectWithValue(error);
+        }
     }
 );
 
 export const getReceivedInquiries = createAsyncThunk(
     'inquiry/getReceivedInquiries',
-    async (userId: string) => {
-        const receivedInquiries = await getInquiriesByResidencyId(userId);
-        return receivedInquiries;
+    async (userId: string, {rejectWithValue}) => {
+        try{
+            const receivedInquiries = await getInquiriesByResidencyId(userId);
+            return receivedInquiries;
+        }catch (error) {
+            return rejectWithValue(error);
+        }
     }
 );
 
@@ -56,9 +69,13 @@ export const addReply = createAsyncThunk(
 
 export const updateInquiry = createAsyncThunk(
     'inquiry/update',
-    async ({inquiryId, inquiry}: { inquiryId: string, inquiry: Inquiry }) => {
-        const response = await updateInquiryApi(inquiryId, inquiry);
-        return response;
+    async ({inquiryId, inquiry}: { inquiryId: string, inquiry: Inquiry },{rejectWithValue}) => {
+        try{
+            const response = await updateInquiryApi(inquiryId, inquiry);
+            return response;
+        }catch (error) {
+            return rejectWithValue(error);
+        }
     }
 );
 

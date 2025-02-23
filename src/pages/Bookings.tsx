@@ -5,6 +5,8 @@ import { RootState } from '../store';
 import { fetchUserBookings, fetchReceivedBookings, cancelUserBooking, updateUserBooking } from '../store/slices/bookingSlice';
 import { Calendar, Clock, AlertCircle, Edit, Trash } from 'lucide-react';
 import Loading from "../components/Loading.tsx";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const Bookings: React.FC = () => {
     const navigate = useNavigate();
@@ -24,27 +26,37 @@ export const Bookings: React.FC = () => {
         if (isAuthenticated && user) {
             dispatch(fetchUserBookings(user._id));
             dispatch(fetchReceivedBookings(user._id));
+        } else {
+            navigate('/login');
         }
-    }, [dispatch, isAuthenticated, user]);
-
-    if (!isAuthenticated) {
-        navigate('/login');
-        return null;
-    }
+    }, [dispatch, isAuthenticated, user, navigate]);
 
     if (loading) {
         return (
             <div className="text-center py-10 flex flex-col items-center">
                 <Loading /> Loading bookings...
+                <ToastContainer />
             </div>
         );
     }
 
-    if (error) return <p className="flex justify-center mt-10">Error: {error}</p>;
+    if (error) {
+        return (
+            <div className="flex justify-center mt-10">
+                <p>Error: {error}</p>
+                <ToastContainer />
+            </div>
+        );
+    }
 
-    const handleCancelBooking = (bookingId: string) => {
+    const handleCancelBooking = async (bookingId: string) => {
         if (window.confirm('Are you sure you want to cancel this booking?')) {
-            dispatch(cancelUserBooking(bookingId));
+            try {
+                await dispatch(cancelUserBooking(bookingId)).unwrap();
+                toast.success("Booking cancelled successfully!");
+            } catch (error) {
+                toast.error("Failed to cancel booking");
+            }
         }
     };
 
@@ -60,15 +72,19 @@ export const Bookings: React.FC = () => {
         }
     };
 
-    const handleSaveUpdate = (bookingId: string) => {
-        const updatedBooking = {
-            ...updatedBookingDetails,
-            startDate: new Date(updatedBookingDetails.startDate),
-            endDate: new Date(updatedBookingDetails.endDate)
-        };
-        dispatch(updateUserBooking({ bookingId, booking: updatedBooking })).then(() => {
-            setEditingBookingId(null); // Close the edit form
-        });
+    const handleSaveUpdate = async (bookingId: string) => {
+        try {
+            const updatedBooking = {
+                ...updatedBookingDetails,
+                startDate: new Date(updatedBookingDetails.startDate),
+                endDate: new Date(updatedBookingDetails.endDate)
+            };
+            await dispatch(updateUserBooking({ bookingId, booking: updatedBooking })).unwrap();
+            setEditingBookingId(null);
+            toast.success("Booking updated successfully!");
+        } catch (error) {
+            toast.error("Failed to update booking");
+        }
     };
 
     const getPropertyDetails = (propertyId: string) => {
@@ -77,6 +93,19 @@ export const Bookings: React.FC = () => {
 
     return (
         <div className="container mx-auto px-6 py-12">
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
+
             <h1 className="text-3xl font-bold mb-8">Your Bookings</h1>
 
             {/* User Bookings */}

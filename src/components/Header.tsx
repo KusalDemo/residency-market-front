@@ -53,9 +53,9 @@ export const Header: React.FC = () => {
               {isAuthenticated && (
                   <>
                     <Link to="/add-property" className="text-gray-600 hover:text-blue-600">Add Property</Link>
-                    <Link to="/favorites" className="text-gray-600 hover:text-blue-600">
+                    {/*<Link to="/favorites" className="text-gray-600 hover:text-blue-600">
                       <Heart className="h-5 w-5" />
-                    </Link>
+                    </Link>*/}
                     <Link to="/bookings" className="text-gray-600 hover:text-blue-600">
                       <Calendar className="h-5 w-5" />
                     </Link>
@@ -93,7 +93,7 @@ export const Header: React.FC = () => {
                 {isAuthenticated && (
                     <>
                       <Link to="/add-property" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Add Property</Link>
-                      <Link to="/favorites" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Favorites</Link>
+                      {/*<Link to="/favorites" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Favorites</Link>*/}
                       <Link to="/bookings" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Bookings</Link>
                       <Link to="/inquiries" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Inquiries</Link>
                     </>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { registerUser } from '../store/slices/authSlice';
 
+
 export const SignUp: React.FC = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -20,7 +21,8 @@ export const SignUp: React.FC = () => {
 
         try {
             await dispatch(registerUser({ name, email, password }));
-            navigate('/login'); // Redirect to login page after successful registration
+
+            navigate('/login');
         } catch (err) {
             setError(err.message);
         } finally {

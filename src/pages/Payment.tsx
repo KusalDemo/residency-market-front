@@ -7,6 +7,8 @@ import { CreditCard, Calendar } from 'lucide-react';
 import Loading from "../components/Loading.tsx";
 import { Booking } from "../types";
 import Cookies from "js-cookie";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const Payment: React.FC = () => {
     const navigate = useNavigate();
@@ -26,16 +28,6 @@ export const Payment: React.FC = () => {
         endDate: ''
     });
 
-    if (loading) {
-        return (
-            <div className="text-center py-10 flex flex-col items-center">
-                <Loading /> Payment Processing...
-            </div>
-        );
-    }
-
-    if (error) return <p className="flex justify-center mt-10">Error: {error}</p>;
-
     if (!isAuthenticated) {
         navigate('/login');
         return null;
@@ -46,6 +38,25 @@ export const Payment: React.FC = () => {
         return null;
     }
 
+    const validateCardNumber = (number: string) => {
+        return /^\d{16}$/.test(number);
+    };
+
+    const validateExpiryDate = (date: string) => {
+        const regex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+        if (!regex.test(date)) return false;
+
+        const [month, year] = date.split("/").map(Number);
+        const currentYear = new Date().getFullYear() % 100;
+        const currentMonth = new Date().getMonth() + 1;
+
+        return year > currentYear || (year === currentYear && month >= currentMonth);
+    };
+
+    const validateCVV = (cvv: string) => {
+        return /^\d{3,4}$/.test(cvv);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -54,7 +65,28 @@ export const Payment: React.FC = () => {
         const endDate = new Date(paymentDetails.endDate);
 
         if (startDate >= endDate) {
-            alert('End date must be after start date.');
+            toast.error("End date must be after start date");
+            return;
+        }
+
+        // Validate payment details
+        if (!/^[A-Za-z\s]+$/.test(paymentDetails.name)) {
+            toast.error("Cardholder name must contain only letters and spaces");
+            return;
+        }
+
+        if (!validateCardNumber(paymentDetails.cardNumber)) {
+            toast.error("Card number must be a valid 16-digit number");
+            return;
+        }
+
+        if (!validateExpiryDate(paymentDetails.expiryDate)) {
+            toast.error("Expiry date must be in MM/YY format and not expired");
+            return;
+        }
+
+        if (!validateCVV(paymentDetails.cvv)) {
+            toast.error("CVV must be 3 or 4 digits");
             return;
         }
 
@@ -68,11 +100,15 @@ export const Payment: React.FC = () => {
             status: 'pending'
         };
 
-        // Dispatch the booking action
-        await dispatch(payBooking(booking));
-
-        // Navigate to bookings page
-        navigate('/bookings');
+        try {
+            await dispatch(payBooking(booking)).unwrap();
+            toast.success('Booking completed successfully!');
+            setTimeout(() => {
+                navigate('/bookings');
+            }, 2000); // Navigate after toast is shown
+        } catch (err) {
+            toast.error(err?.message || 'Failed to complete booking');
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,8 +116,39 @@ export const Payment: React.FC = () => {
         setPaymentDetails(prev => ({ ...prev, [name]: value }));
     };
 
+    if (loading) {
+        return (
+            <div className="text-center py-10 flex flex-col items-center">
+                <Loading /> Payment Processing...
+                <ToastContainer />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center mt-10">
+                <p>Error: {error}</p>
+                <ToastContainer />
+            </div>
+        );
+    }
+
     return (
         <div className="container mx-auto px-6 py-12">
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
+
             <div className="max-w-2xl mx-auto">
                 <h1 className="text-3xl font-bold mb-8">Complete Your Booking</h1>
 
@@ -133,9 +200,10 @@ export const Payment: React.FC = () => {
                                     onChange={handleChange}
                                     className="w-full p-3 border border-gray-300 rounded-md pl-10"
                                     placeholder="1234 5678 9012 3456"
+                                    maxLength={16}
                                     required
                                 />
-                                <CreditCard className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                                <CreditCard className="absolute left-3 top-3 h-5 w-5 text-gray-400"/>
                             </div>
                         </div>
 
@@ -149,6 +217,7 @@ export const Payment: React.FC = () => {
                                     name="startDate"
                                     value={paymentDetails.startDate}
                                     onChange={handleChange}
+                                    min={new Date().toISOString().split('T')[0]}
                                     className="w-full p-3 border border-gray-300 rounded-md"
                                     required
                                 />
@@ -162,6 +231,7 @@ export const Payment: React.FC = () => {
                                     name="endDate"
                                     value={paymentDetails.endDate}
                                     onChange={handleChange}
+                                    min={paymentDetails.startDate || new Date().toISOString().split('T')[0]}
                                     className="w-full p-3 border border-gray-300 rounded-md"
                                     required
                                 />
@@ -171,7 +241,7 @@ export const Payment: React.FC = () => {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Expiry Date
+                                    Expiry Date (MM/YY)
                                 </label>
                                 <div className="relative">
                                     <input
@@ -181,9 +251,10 @@ export const Payment: React.FC = () => {
                                         onChange={handleChange}
                                         className="w-full p-3 border border-gray-300 rounded-md pl-10"
                                         placeholder="MM/YY"
+                                        maxLength={5}
                                         required
                                     />
-                                    <Calendar className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                                    <Calendar className="absolute left-3 top-3 h-5 w-5 text-gray-400"/>
                                 </div>
                             </div>
                             <div>
@@ -197,6 +268,7 @@ export const Payment: React.FC = () => {
                                     onChange={handleChange}
                                     className="w-full p-3 border border-gray-300 rounded-md"
                                     placeholder="123"
+                                    maxLength={4}
                                     required
                                 />
                             </div>

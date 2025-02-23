@@ -1,6 +1,13 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Comment} from '../../types';
-import {getCommentsFromResidencyId, addComment as addCommentApi, updateComment as updateCommentApi, deleteComment as deleteCommentApi, upvoteComment as upvoteCommentApi, downvoteComment as downvoteCommentApi} from "../../api/commentApi.ts";
+import {
+    getCommentsFromResidencyId,
+    addComment as addCommentApi,
+    updateComment as updateCommentApi,
+    deleteComment as deleteCommentApi,
+    upvoteComment as upvoteCommentApi,
+    downvoteComment as downvoteCommentApi
+} from "../../api/commentApi.ts";
 
 interface CommentState {
     comments: Comment[];
@@ -16,7 +23,7 @@ const initialState: CommentState = {
 
 export const getCommentsForResidency = createAsyncThunk(
     'comments/get',
-    async (residencyId : string) => {
+    async (residencyId: string) => {
         const response = await getCommentsFromResidencyId(residencyId);
         return response.data;
     }
@@ -33,6 +40,7 @@ export const addComment = createAsyncThunk(
         }
     }
 );
+
 export const updateComment = createAsyncThunk(
     'comments/update',
     async ({commentId, comment}: { commentId: string, comment: Comment }, {rejectWithValue}) => {
@@ -59,10 +67,10 @@ export const deleteComment = createAsyncThunk(
 
 export const upvoteComment = createAsyncThunk(
     'comments/upvote',
-    async (commentId: string, {rejectWithValue}) => {
+    async (commentId: string, {rejectWithValue, getState}) => {
         try {
             const response = await upvoteCommentApi(commentId);
-            return response;
+            return { commentId, data: response };
         } catch (err) {
             return rejectWithValue(err.message);
         }
@@ -71,10 +79,10 @@ export const upvoteComment = createAsyncThunk(
 
 export const downvoteComment = createAsyncThunk(
     'comments/downvote',
-    async (commentId: string, {rejectWithValue}) => {
+    async (commentId: string, {rejectWithValue, getState}) => {
         try {
             const response = await downvoteCommentApi(commentId);
-            return response;
+            return { commentId, data: response };
         } catch (err) {
             return rejectWithValue(err.message);
         }
@@ -84,9 +92,7 @@ export const downvoteComment = createAsyncThunk(
 const commentSlice = createSlice({
     name: 'comment',
     initialState,
-    reducers: {
-
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(getCommentsForResidency.pending, (state) => {
@@ -113,16 +119,44 @@ const commentSlice = createSlice({
             .addCase(deleteComment.fulfilled, (state, action) => {
                 state.comments = state.comments.filter(c => c.id !== action.payload);
             })
-            .addCase(upvoteComment.fulfilled, (state, action) => {
-                const comment = state.comments.find(c => c.id === action.payload.id);
+            // Optimistic updates for upvote
+            .addCase(upvoteComment.pending, (state, action) => {
+                const comment = state.comments.find(c => c.id === action.meta.arg);
                 if (comment) {
-                    comment.upVotes = action.payload.upVotes;
+                    comment.upVotes += 1;
+                }
+            })
+            .addCase(upvoteComment.fulfilled, (state, action) => {
+                const comment = state.comments.find(c => c.id === action.payload.commentId);
+                if (comment) {
+                    comment.upVotes = action.payload.data.upVotes || comment.upVotes;
+                    comment.downVotes = action.payload.data.downVotes || comment.downVotes;
+                }
+            })
+            .addCase(upvoteComment.rejected, (state, action) => {
+                const comment = state.comments.find(c => c.id === action.meta.arg);
+                if (comment) {
+                    comment.upVotes -= 1; // Revert the optimistic update
+                }
+            })
+            // Optimistic updates for downvote
+            .addCase(downvoteComment.pending, (state, action) => {
+                const comment = state.comments.find(c => c.id === action.meta.arg);
+                if (comment) {
+                    comment.downVotes += 1;
                 }
             })
             .addCase(downvoteComment.fulfilled, (state, action) => {
-                const comment = state.comments.find(c => c.id === action.payload.id);
+                const comment = state.comments.find(c => c.id === action.payload.commentId);
                 if (comment) {
-                    comment.downVotes = action.payload.downVotes;
+                    comment.upVotes = action.payload.data.upVotes || comment.upVotes;
+                    comment.downVotes = action.payload.data.downVotes || comment.downVotes;
+                }
+            })
+            .addCase(downvoteComment.rejected, (state, action) => {
+                const comment = state.comments.find(c => c.id === action.meta.arg);
+                if (comment) {
+                    comment.downVotes -= 1; // Revert the optimistic update
                 }
             });
     }
