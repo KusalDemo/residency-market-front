@@ -60,7 +60,7 @@ export const AddProperty: React.FC = () => {
                 return;
             }
 
-            if (!formData.title || !formData.description || !formData.price || !formData.address || !formData.city || !formData.country || !formData.image) {
+            if (!formData.title || !formData.description || !formData.price || !formData.address || !formData.image) {
                 toast.error('Please fill in all required fields.');
                 return;
             }
@@ -125,8 +125,8 @@ export const AddProperty: React.FC = () => {
             description: property.description,
             price: property.price.toString(),
             address: property.location,
-            city: property.location,
-            country: property.location,
+            city: "",
+            country: "",
             image: property.images?.[0] || '',
             image2: property.images?.[1] || '',
             image3: property.images?.[2] || '',
@@ -255,7 +255,7 @@ export const AddProperty: React.FC = () => {
                         />
                     </div>
 
-                    <div>
+                    {/*<div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             City
                         </label>
@@ -281,7 +281,7 @@ export const AddProperty: React.FC = () => {
                             className="w-full p-3 border border-gray-300 rounded-md"
                             required
                         />
-                    </div>
+                    </div>*/}
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -382,8 +382,8 @@ export const AddProperty: React.FC = () => {
                                         description: '',
                                         price: '',
                                         address: '',
-                                        city: '',
-                                        country: '',
+                                        city: ' ',
+                                        country: ' ',
                                         image: '',
                                         image2: '',
                                         image3: '',
