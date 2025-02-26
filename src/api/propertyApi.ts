@@ -6,7 +6,7 @@ const BASE_URL = 'http://127.0.0.1:3000/api'
 
 export const fetchProperties = async () => {
     try {
-        const axiosResponse = await axios.get(`${BASE_URL}/residency/`);
+        const axiosResponse = await axios.get(`${BASE_URL}/residency/get-all`);
         return axiosResponse.data;
     } catch (error) {
         console.error(`Error occurred: ${error.message}`);
