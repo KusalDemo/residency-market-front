@@ -14,18 +14,11 @@ export const Hero: React.FC = () => {
         <p className="text-xl text-white mb-8 max-w-2xl">
           Discover the perfect property from our extensive collection of luxury homes, apartments, and villas.
         </p>
-        <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg p-2">
-          <div className="flex items-center">
-            <input
-              type="text"
-              placeholder="Search by location, property type, or price range..."
-              className="flex-1 p-3 outline-none"
-            />
+        <div className="w-full max-w-2xl flex justify-center rounded-lg shadow-lg p-2">
             <button className="bg-blue-600 text-white p-3 rounded-md flex items-center">
               <Search className="h-5 w-5 mr-2" />
-              Search
+              LET'S GO SEARCH
             </button>
-          </div>
         </div>
       </div>
     </div>

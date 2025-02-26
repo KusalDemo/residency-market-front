@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {Home, LogIn, LogOut, Menu, X, Heart, Calendar, MessageCircle} from 'lucide-react';
+import {Home, LogIn, LogOut, Menu, X, Calendar, MessageCircle} from 'lucide-react';
 import { RootState } from '../store';
 import { logout } from '../store/slices/authSlice';
-import Cookies from "js-cookie";
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -13,12 +12,6 @@ export const Header: React.FC = () => {
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
 
   const handleLogout = () => {
-
-   /* Cookies.remove('accessToken');
-    Cookies.remove('refreshToken');
-    Cookies.remove('user_id');
-    Cookies.remove('user_email');
-*/
     dispatch(logout());
     navigate('/');
     setIsMenuOpen(false);
@@ -30,7 +23,7 @@ export const Header: React.FC = () => {
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center space-x-2">
               <Home className="h-6 w-6 text-blue-600" />
-              <span className="text-xl font-bold text-gray-800">RealEstate</span>
+              <span className="text-xl font-bold text-gray-800">Residency.lk</span>
             </Link>
 
             <button
@@ -49,7 +42,6 @@ export const Header: React.FC = () => {
               <Link to="/properties" className="text-gray-600 hover:text-blue-600">Properties</Link>
               <Link to="/news" className="text-gray-600 hover:text-blue-600">News</Link>
               <Link to="/about" className="text-gray-600 hover:text-blue-600">About</Link>
-              <Link to="/contact" className="text-gray-600 hover:text-blue-600">Contact</Link>
               {isAuthenticated && (
                   <>
                     <Link to="/add-property" className="text-gray-600 hover:text-blue-600">Add Property</Link>
@@ -89,7 +81,7 @@ export const Header: React.FC = () => {
                 <Link to="/" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Home</Link>
                 <Link to="/properties" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Properties</Link>
                 <Link to="/about" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>About</Link>
-                <Link to="/contact" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+                {/*<Link to="/contact" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Contact</Link>*/}
                 {isAuthenticated && (
                     <>
                       <Link to="/add-property" className="block text-gray-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Add Property</Link>

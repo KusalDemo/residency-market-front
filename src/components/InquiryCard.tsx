@@ -45,7 +45,7 @@ export const InquiryCard: React.FC<{ inquiry: Inquiry; isReceived?: boolean }> =
     };
 
     return (
-        <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
+        <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200 mb-4">
             <h3 className="text-lg font-semibold text-gray-800">Inquiry ID: {inquiry._id}</h3>
             <p className="text-sm text-gray-600">Residency ID: {inquiry.residency}</p>
             <p className="text-sm text-gray-600">User ID: {inquiry.userId}</p>
@@ -87,13 +87,13 @@ export const InquiryCard: React.FC<{ inquiry: Inquiry; isReceived?: boolean }> =
                     </button>
                 ) : (
                     <>
-                        <textarea
+                        {/*<textarea
                             value={replyMessage}
                             onChange={(e) => setReplyMessage(e.target.value)}
                             placeholder="Write your reply..."
                             className="w-full p-3 border border-gray-300 rounded-md mb-2"
                             rows={2}
-                        />
+                        />*/}
                        {/* <button
                             onClick={handleReply}
                             className="flex items-center justify-center w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"

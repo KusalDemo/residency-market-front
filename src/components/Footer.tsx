@@ -11,7 +11,7 @@ export const Footer: React.FC = () => {
           <div>
             <Link to="/" className="flex items-center space-x-2 mb-6">
               <Home className="h-6 w-6 text-blue-500" />
-              <span className="text-xl font-bold">RealEstate</span>
+              <span className="text-xl font-bold">Residency.lk</span>
             </Link>
             <p className="text-gray-400 mb-6">
               Your trusted partner in finding the perfect property. We make real estate simple and accessible.
@@ -76,7 +76,7 @@ export const Footer: React.FC = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-blue-500" />
-                <span className="text-gray-400">info@realestate.com</span>
+                <span className="text-gray-400">info@residency.lk</span>
               </div>
             </div>
           </div>
@@ -84,7 +84,7 @@ export const Footer: React.FC = () => {
 
         <div className="border-t border-gray-800 mt-12 pt-8">
           <p className="text-center text-gray-400">
-            © {new Date().getFullYear()} RealEstate. by Kusal Gunasekara.
+            © {new Date().getFullYear()} Residency.lk by Kusal Gunasekara.
           </p>
         </div>
       </div>

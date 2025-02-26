@@ -106,8 +106,6 @@ export const Bookings: React.FC = () => {
                 theme="light"
             />
 
-            <h1 className="text-3xl font-bold mb-8">Your Bookings</h1>
-
             {/* User Bookings */}
             <div className="mb-12">
                 <h2 className="text-2xl font-semibold mb-6">Your Bookings</h2>
@@ -200,9 +198,9 @@ export const Bookings: React.FC = () => {
 
             {/* Received Bookings */}
             <div>
-                <h2 className="text-2xl font-semibold mb-6">Received Bookings</h2>
+                {/*<h2 className="text-2xl font-semibold mb-6">Received Bookings</h2>*/}
                 {receivedBookings.length === 0 ? (
-                    <p className="text-gray-600">No bookings received for your properties.</p>
+                    <p className="text-gray-600">bookings....</p>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {receivedBookings.map(booking => {
