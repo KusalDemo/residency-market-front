@@ -1,62 +1,69 @@
 import axios from "axios";
 import {Residency} from "../types";
+import ApiClient from "../util/ApiClient.ts";
 
 const BASE_URL = 'http://127.0.0.1:3000/api'
 
 export const fetchProperties = async () => {
-    try{
+    try {
         const axiosResponse = await axios.get(`${BASE_URL}/residency/`);
-        return axiosResponse.data
-    }catch (err){
-        throw new Error(err.message);
+        return axiosResponse.data;
+    } catch (error) {
+        console.error(`Error occurred: ${error.message}`);
+        throw new Error(error.message);
     }
-}
+};
 
 export const getResidencyById = async (id: string) => {
-    try{
+    try {
         const axiosResponse = await axios.get(`${BASE_URL}/residency/get/${id}`);
-        console.log(`axiosResponse : ${JSON.stringify(axiosResponse)}`);
-        return axiosResponse.data
-    }catch (err){
-        throw new Error(err.message);
+        return axiosResponse.data;
+    } catch (error) {
+        console.error(`Error occurred: ${error.message}`);
+        throw new Error(error.message);
     }
-}
+};
 
 export const fetchPropertiesByUserId = async (id: string) => {
-    try{
-        const axiosResponse = await axios.get(`${BASE_URL}/residency/getOwns/${id}`);
-        console.log(`axiosResponse : ${JSON.stringify(axiosResponse)}`);
-        return axiosResponse.data
-    }catch (err){
-        throw new Error(err.message);
+    try {
+        const axiosInstance = ApiClient.getAxiosInstance();
+        const axiosResponse = await axiosInstance.get(`/residency/getOwns/${id}`);
+        return axiosResponse.data;
+    } catch (error) {
+        console.error(`Error occurred: ${error.message}`);
+        throw new Error(error.message);
     }
-}
+};
 
 export const addProperty = async (property: Residency) => {
-    try{
-        console.log(`Residency to save : ${JSON.stringify(property)}`);
-        const axiosResponse = await axios.post(`${BASE_URL}/residency/create`, property);
-        console.log(`axiosResponse : ${JSON.stringify(axiosResponse)}`);
-        return axiosResponse.data
-    }catch (err){
-        throw new Error(err.message);
-    }
-}
-
-export const updateProperty = async (propertyId:string, property:Residency) => {
-    try{
-        let axiosResponse = await axios.put(`${BASE_URL}/residency/update/${propertyId}`, property);
-        return axiosResponse.data
-    }catch (error){
+    try {
+        const axiosInstance = ApiClient.getAxiosInstance();
+        const axiosResponse = await axiosInstance.post("/residency/create", property);
+        return axiosResponse.data;
+    } catch (error) {
+        console.error(`Error occurred: ${error.message}`);
         throw new Error(error.message);
     }
-}
+};
 
-export const deleteProperty = async (propertyId:string) => {
-    try{
-      let axiosResponse = await axios.delete(`${BASE_URL}/residency/delete/${propertyId}`);
-      return axiosResponse.data
-    }catch (error){
+export const updateProperty = async (propertyId: string, property: Residency) => {
+    try {
+        const axiosInstance = ApiClient.getAxiosInstance();
+        const axiosResponse = await axiosInstance.put(`/residency/update/${propertyId}`, property);
+        return axiosResponse.data;
+    } catch (error) {
+        console.error(`Error occurred: ${error.message}`);
         throw new Error(error.message);
     }
-}
+};
+
+export const deleteProperty = async (propertyId: string) => {
+    try {
+        const axiosInstance = ApiClient.getAxiosInstance();
+        const axiosResponse = await axiosInstance.delete(`/residency/delete/${propertyId}`);
+        return axiosResponse.data;
+    } catch (error) {
+        console.error(`Error occurred: ${error.message}`);
+        throw new Error(error.message);
+    }
+};
