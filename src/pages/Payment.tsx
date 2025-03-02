@@ -93,7 +93,7 @@ export const Payment: React.FC = () => {
         // Create booking object
         const booking: Booking = {
             residency: property._id,
-            user: user.id || Cookies.get('user_id'),
+            user: Cookies.get('user_id'),
             startDate: startDate,
             endDate: endDate,
             total: property.price,

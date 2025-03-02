@@ -7,6 +7,7 @@ import { Calendar, Clock, AlertCircle, Edit, Trash } from 'lucide-react';
 import Loading from "../components/Loading.tsx";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {getProperties} from "../store/slices/propertySlice.ts";
 
 export const Bookings: React.FC = () => {
     const navigate = useNavigate();
@@ -26,10 +27,11 @@ export const Bookings: React.FC = () => {
         if (isAuthenticated && user) {
             dispatch(fetchUserBookings(user._id));
             dispatch(fetchReceivedBookings(user._id));
+            dispatch(getProperties())
         } else {
             navigate('/login');
         }
-    }, [dispatch, isAuthenticated, user, navigate]);
+    }, []);
 
     if (loading) {
         return (

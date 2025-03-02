@@ -2,6 +2,7 @@ import axios from "axios";
 import {Residency} from "../types";
 import ApiClient from "../util/ApiClient.ts";
 
+// const BASE_URL = 'https://residencymarket.onrender.com/api'
 const BASE_URL = 'http://127.0.0.1:3000/api'
 
 export const fetchProperties = async () => {

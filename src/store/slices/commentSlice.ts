@@ -156,7 +156,7 @@ const commentSlice = createSlice({
             .addCase(downvoteComment.rejected, (state, action) => {
                 const comment = state.comments.find(c => c.id === action.meta.arg);
                 if (comment) {
-                    comment.downVotes -= 1; // Revert the optimistic update
+                    comment.downVotes -= 1;
                 }
             });
     }

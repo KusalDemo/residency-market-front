@@ -201,7 +201,7 @@ export const PropertyDetail: React.FC = () => {
                             </button>
                         </form>
 
-                        {comments.slice(0, visibleComments).map((comment) => (
+                        {comments?.slice(0, visibleComments).map((comment) => (
                             <div key={comment._id} className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex justify-between items-start mb-4">
                                     <div>
@@ -269,7 +269,7 @@ export const PropertyDetail: React.FC = () => {
                         ))}
 
                         {/* Show "View More" button only if there are more comments */}
-                        {visibleComments < comments.length && (
+                        {visibleComments < comments?.length && (
                             <button
                                 onClick={() => setVisibleComments((prev) => prev + 5)}
                                 className="w-full mt-4 bg-gray-200 text-gray-700 py-2 rounded-md hover:bg-gray-300"

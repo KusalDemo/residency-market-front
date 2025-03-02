@@ -1,50 +1,34 @@
-# React + TypeScript + Vite
+# Residency Market
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+The **Residency Market** is a web application that allows users to list, explore, and book residential properties. Users can add their own properties, book available properties, send inquiries, and engage with the community by adding comments. Additionally, users can stay updated with the latest news on residencies and hotels. The application is built using **React** for the frontend and **Express.js** for the backend, with **MongoDB** as the database.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## Expanding the ESLint configuration
+- **Frontend:** React.js, Tailwind CSS
+- **Backend:** Express.js, Node.js
+- **Database:** MongoDB
+- **Authentication:** JWT (JSON Web Token)
+- **API Integration:** Third-party news and property listing APIs
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Features
 
-- Configure the top-level `parserOptions` property like this:
+- 🏡 **Add Your Own Properties** – List your residential properties for rent or sale
+- 🏨 **Book Properties** – Securely book available properties with ease
+- 💬 **Comments** – Share experiences on listed properties
+- 📩 **Send Inquiries** – Contact property owners for more details
+- 📰 **Residency & Hotel News** – Stay updated with the latest trends in the industry
+- 🔐 **User Authentication** – Secure login with JWT
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Deployment
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- **Frontend:** Vercel
+- **Backend:** Render
+- **Database:** MongoDB Atlas
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## 📜 License
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+

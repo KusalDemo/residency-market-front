@@ -2,7 +2,8 @@ import axios from "axios";
 import { Booking } from "../types";
 import ApiClient from "../util/ApiClient.ts";
 
-const BASE_URL = 'http://127.0.0.1:3000/api';
+// const BASE_URL = 'https://residencymarket.onrender.com/api';
+ const BASE_URL = 'http://127.0.0.1:3000/api';
 
 export const addBooking = async (booking: Booking) => {
     try {

@@ -70,7 +70,7 @@ export const About: React.FC = () => {
         </div>
       </section>
 
-      {/* Team */}
+      {/* Team
       <section className="py-16">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl font-bold mb-12 text-center">Our Leadership Team</h2>
@@ -104,7 +104,7 @@ export const About: React.FC = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section>*/}
     </div>
   );
 };

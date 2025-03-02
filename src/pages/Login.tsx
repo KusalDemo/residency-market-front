@@ -14,7 +14,7 @@ export const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await dispatch(loginUser({ email, password }));
+    dispatch(loginUser({email, password}));
   };
 
 

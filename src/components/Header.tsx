@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {Home, LogIn, LogOut, Menu, X, Calendar, MessageCircle} from 'lucide-react';
 import { RootState } from '../store';
-import { logout } from '../store/slices/authSlice';
+import {logout, setIsAuthenticated} from '../store/slices/authSlice';
+import Cookies from "js-cookie";
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    const userId = Cookies.get("user_id");
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    userId? dispatch(setIsAuthenticated(true)) : navigate('/') ;
+
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -44,7 +52,7 @@ export const Header: React.FC = () => {
               <Link to="/about" className="text-gray-600 hover:text-blue-600">About</Link>
               {isAuthenticated && (
                   <>
-                    <Link to="/add-property" className="text-gray-600 hover:text-blue-600">Add Property</Link>
+                    <Link to="/add-property" className="text-gray-600 hover:text-blue-600">Manage Owns</Link>
                     {/*<Link to="/favorites" className="text-gray-600 hover:text-blue-600">
                       <Heart className="h-5 w-5" />
                     </Link>*/}
